@@ -1,8 +1,3 @@
-# jquery  
-https://wangy0316.github.io/jquery/index.html  
-这是《锋利的jquery》中的一个网站例子。在这里也简单的模仿了一下，主要实现的功能有  
-1.点击搜索框后默认的提示文字消失，然后点击空白处，默认的提示文字出现。  
-2.使用插件jquery.cookie实现一个换肤功能，并且记忆上次的皮肤，chrome中不能记忆，firefox可以。  
-3.鼠标移动到导航栏，出现选项，鼠标移出，选项消失。  
-4.图片轮播。  
-5.点击按钮图片移动  
+# 笔记
+
+## [regex](https://github.com/wangy0316/books/regex/index.md) 正则表达式
