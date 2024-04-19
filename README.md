@@ -8,6 +8,7 @@
 git删除已提交的commit  
 git reset --hard SHA文件id  
 git push origin HEAD -f  
+或者强制将本地推到线上git push --force
 这样就删除了，选择的SHA就是需要保留的提交，只要在SHA上面的记录和文件都删除了。  
 
 git挪动文件位置并保留commit记录  
