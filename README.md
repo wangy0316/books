@@ -16,3 +16,5 @@ git挪动文件位置并保留commit记录
 git mv src/old_location/file.txt src/new_location/file.txt  
 git commit -m "提交"  
 git push  
+
+vue文件中，路径带好文件类型，比如xxx.vue,xxx.js。这样可直接点击跳转打开文件
