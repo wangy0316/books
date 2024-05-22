@@ -18,3 +18,5 @@ git commit -m "提交"
 git push  
 
 vue文件中，路径带好文件类型，比如xxx.vue,xxx.js。这样可直接点击跳转打开文件
+
+sessionStorage在新打开的页面上可以共享数据,需要通过window.open打开新页面
