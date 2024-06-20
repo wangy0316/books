@@ -24,7 +24,21 @@ const baseURL = "https://fakestoreapi.com/products"
 const url = new URL(baseURL)
 url.search = params.toString()
 
+// 清理数组
+// Boolean函数作为回调。它将会从数组中删除所有假值（ 0，false，null，undefined，''，NaN）
+arr.filter(Boolean)
 
+// 数组中数据检查
+some(()=>)函数用于检查数组中是否至少有一个元素不符合要求，every(()=>)来检查数组的所有元素是否全部符合要求
+
+// 取两个数组的交集
+arr1.filter(value => arr2.includes(value))
+
+// ??和||区别
+let a = value ?? 1
+let a = value || 1
+|| 的左侧如果为假值，它将会返回右侧的值。JavaScript 中的假值包括null、undefined、0、NaN、''（空字符串）和false
+空值合并运算符 (??) 检查左侧是否为null或undefined
 
 
 ```
