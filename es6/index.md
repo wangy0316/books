@@ -37,8 +37,8 @@ arr1.filter(value => arr2.includes(value))
 // ??和||区别
 let a = value ?? 1
 let a = value || 1
-|| 的左侧如果为假值，它将会返回右侧的值。JavaScript 中的假值包括null、undefined、0、NaN、''（空字符串）和false
-空值合并运算符 (??) 检查左侧是否为null或undefined
+// || 的左侧如果为假值，它将会返回右侧的值。JavaScript 中的假值包括null、undefined、0、NaN、''（空字符串）和false
+// 空值合并运算符 (??) 检查左侧是否为null或undefined
 
 
 ```
