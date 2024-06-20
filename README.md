@@ -5,6 +5,7 @@
 ## [es6](https://github.com/wangy0316/books/blob/master/es6/index.md) es6写法
 
 // 回退代码不推荐reset，当多人迭代，其它人的提交会把删除的记录提交，而且不会出现变更提示。
+revert回退代码
 
 git挪动文件位置并保留commit记录  
 原文件位置移动到新位置  
