@@ -8,3 +8,27 @@ el-table中，如果要给el-table-column分块，必须使用template包裹，�
 
 在循环中如何设置单独的el-popover
 通过v-model控制el-popover的显隐，控制显隐使用鼠标事件mouseenter和mouseleave。
+`
+<span @mouseenter="onMouseEnter($event)"  @mouseleave="onMouseLeave">popover</span>
+<el-popover
+ ref="popover"
+ v-model="openPopover"
+ placement="bottom-start"
+ width="100"
+ trigger="hover">
+ <div class="dept-popover"></div>
+</el-popover>
+onMouseEnter(e, item, ele){
+   this.openPopover = false;
+   this.$refs.popover.doDestroy()
+   this.$nextTick(() => {
+     this.$refs.popover.referenceElm = e.target;
+     this.openPopover = true;
+   });
+},
+onMouseLeave(){
+   this.$nextTick(() => {
+     this.$refs.popover.doClose()
+   });
+}
+`
