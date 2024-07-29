@@ -6,7 +6,7 @@
 
 el-table中，如果要给el-table-column分块，必须使用template包裹，并且每个el-table-column必须带上key值，不然数据展示会错位
 
-el-menu中，不要给el-submenu添加popper-append-to-body属性，不然当鼠标从二级菜单挪出后不会关闭一级el-submenu菜单。
+el-menu中，不要给el-submenu添加popper-append-to-body属性，不然当鼠标从二级菜单挪出后不会关闭一级el-submenu菜单。去掉如果右边空间不足，菜单不会自动展示在左侧。
 
 在循环中如何设置单独的el-popover
 通过v-model控制el-popover的显隐，控制显隐使用鼠标事件mouseenter和mouseleave
