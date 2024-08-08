@@ -21,6 +21,7 @@ vue文件中，路径带好文件类型，比如xxx.vue,xxx.js。这样可直接
 
 sessionStorage在新打开的页面上可以共享数据,需要通过window.open打开新页面
 
-vue.config设置打包后的文件存在位置
-outputDir: '../demo/dist', 
-outputDir: String.raw`D:\html\vue\gs\dist`,
+vue.config设置打包后的文件存在位置  
+outputDir: '../demo/dist',   
+outputDir: String.raw`D:\html\vue\gs\dist`,  
+
