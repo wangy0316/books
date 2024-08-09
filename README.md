@@ -25,3 +25,5 @@ vue.config设置打包后的文件存在位置
 outputDir: '../demo/dist',   
 outputDir: String.raw`D:\html\vue\gs\dist`,  
 
+打包不删除原打包后的文件，在script命令中添加--no-clean
+
