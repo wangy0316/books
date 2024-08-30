@@ -1,5 +1,5 @@
 ```javascript
-// 解构赋值, 赋值已声明变量写法
+      // 解构赋值, 赋值已声明变量写法
 const obj = {a:1, b:2}
 let a = null,
     b = null
@@ -48,5 +48,11 @@ let obj = {
 const {a,b:{c}} = obj
 // 由于b不存在这将报错 obj中的b需要写成 b: null || {}
 // 根据这个特性使用map输出需要的字段就需要主要这种父属性不存在但是需要取子属性的情况
+
+// 妙用reduce可遍历数组中的对象值
+[].renduce((prev,cur)=>{
+  const value = []  
+  return value
+} , [])
 
 ```
