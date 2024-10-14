@@ -1,5 +1,5 @@
 ```javascript
-      // 解构赋值, 赋值已声明变量写法
+，// 解构赋值, 赋值已声明变量写法
 const obj = {a:1, b:2}
 let a = null,
     b = null
@@ -54,5 +54,7 @@ const {a,b:{c}} = obj
   const value = []  
   return value
 } , [])
+
+// includes和indexOf对unll和undefined是不同的标准，indexOf() 是使用的严格相等算法（===），而includes() 是使用的是抽象相等算法（==）。使用时需要注意
 
 ```
