@@ -1,13 +1,21 @@
 ```javascript
-，// 解构赋值, 赋值已声明变量写法
+
+// 解构赋值, 赋值已声明变量写法
 const obj = {a:1, b:2}
 let a = null,
     b = null
 ({a, b} = obj)
+// 解构数组中的对象
+const arr = [{name:1}]
+const [{name:value}] = arr
+value就是1
 
 // 当data为 undefined 、null 时候，代码就会报错需要增加或写法
 const { data } = props;
 const { name, age } = data || {}
+
+// 需要将赋值语句用用括号括起来
+isBoolean && (value = '条件达成');
 
 // data必须为真数组
 if (Array.isArray(data)) {
@@ -33,6 +41,22 @@ some(()=>)函数用于检查数组中是否至少有一个元素不符合要求�
 
 // 取两个数组的交集
 arr1.filter(value => arr2.includes(value))
+
+// 数组求和
+const arr = [1, 2, 3, 4]
+const sum = arr.reduce((total, value) => total + value, 0);
+
+// 获取后缀名称
+const filePath = "file://upload/test.png"
+const index = filePath.lastIndexOf(".")
+const ext = index > -1 && filePath.substr(index+1)
+// 或者
+filePath.split(".").pop()
+
+// 字符串转对象
+const query = '?name=John&age=30'
+// 将字符串解析为对象
+const parseQuery = query => Object.fromEntries(new URLSearchParams(query));
 
 // ??和||区别
 let a = value ?? 1
