@@ -1,4 +1,13 @@
 ```javascript
+// 同源策略主要限制的是 JavaScript 发起的异步请求（如 AJAX），而不是表单提交
+// 使用 contains 方法来实现检测元素之外的点击
+
+// 返回什么值
+console.log('b', arr.length && 'a')
+// 这里会判断arr是否为true，如果是true则返回'a', 如果为false，那么这里就返回false。
+// 如果arr = [] 那么这里就有个特殊情况，会返回0.
+// 如果只能返回false和'a'，那么这里就需要用到!!
+!!arr.length && 'a'
 
 // 解构赋值, 赋值已声明变量写法
 const obj = {a:1, b:2}
@@ -65,6 +74,12 @@ let a = value || 1
 // 空值合并运算符 (??) 检查左侧是否为null或undefined
 
 // 如果解构模式是嵌套的对象，而且子对象所在的父属性不存在，那么将会报错
+// 可以设置默认值
+const { b: { c=null } } = { b: { } } 
+// 这种情况下，c还是会报错
+const { b: { c=null } } = { b: null } 
+console.log('b', c)
+
 let obj = {
     a: 1,
     b: null
@@ -80,5 +95,8 @@ const {a,b:{c}} = obj
 } , [])
 
 // includes和indexOf对unll和undefined是不同的标准，indexOf() 是使用的严格相等算法（===），而includes() 是使用的是抽象相等算法（==）。使用时需要注意
+
+LRU（Least Recently Used）缓存是一种缓存淘汰策略，用于在缓存容量有限的情况下，决定哪些数据需要被移除。其核心思想是：当缓存满了，需要移除最久未被使用的数据，以给新的数据腾出空间。
+
 
 ```

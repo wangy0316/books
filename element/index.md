@@ -4,6 +4,28 @@
    只需要配置Element.Dialog.props.closeOnClickModal.default = false就可实现全局不可关闭
 2.
 
+关于key导致form校验不生效，由于form-item默认是隐藏的，当展示form-item的时候由于key的原因没有重新渲染，于是导致校验不触发。
+
+tree去掉选中后的背景色
+
+```
+this.$refs.tree.setCurrentKey(null)
+// 更改选中颜色和hover
+::v-deep .el-tree-node{
+  .el-tree-node__content{
+    background-color: transparent;
+    &:hover{
+       background-color: #ccc;
+    }
+  }
+  .is-current{
+    &>.el-tree-node__content{
+      background-color: red;
+    }
+  }
+}
+```
+
 el-table中，如果要给el-table-column分块，必须使用template包裹，并且每个el-table-column必须带上key值，不然数据展示会错位
 
 el-table中，表头和内容发生错位情况，引入一下css。需要全局
@@ -15,6 +37,8 @@ el-table中，表头和内容发生错位情况，引入一下css。需要全局
 ```
 
 el-menu中，不要给el-submenu添加popper-append-to-body属性，不然当鼠标从二级菜单挪出后不会关闭一级el-submenu菜单。去掉如果右边空间不足，菜单不会自动展示在左侧。
+
+[el-autocomplete中输入框获取了焦点但是清除数据后，搜索框没有展示全部数据](https://www.jianshu.com/p/3f0c813d28ac)
 
 在循环中如何设置单独的el-popover
 通过v-model控制el-popover的显隐，控制显隐使用鼠标事件mouseenter和mouseleave

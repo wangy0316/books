@@ -38,4 +38,17 @@ export default echarts
 // 图表宽度太小，重设宽度
 this.chart.resize()
 // 如果页面有多个图表，需要动态id传入。
+
+// 自定义数据结构
+dataset: {
+  dimensions: ['a', 'b'],  // 展示的字段，接口返回的数据中的字段
+  source, // 接口返回的数据
+}
+
+// x, y轴设置轴刻度标签展示
+xAxis: {
+  axisLabel:{
+    formatter: (value)=>{}
+  }
+}
 ```

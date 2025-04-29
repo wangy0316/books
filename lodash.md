@@ -22,4 +22,9 @@ const values = _.values(merged);
 
 // 用字符的方式获取值，比如获取a[0].c的值
 _.get(obj, 'a[0].c')
+
+// has,get,set
+_.has(obj, key) // 判断obj中是否存在key
+_.set(obj, key, []) // 给obj中的key键塞入[]数组。
+_.get(obj, key).push({ name: 'a' }) // 给obj中的key键推送数据
 ```
