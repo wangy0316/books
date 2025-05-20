@@ -13,6 +13,26 @@ git mv src/old_location/file.txt src/new_location/file.txt
 git commit -m "提交"
 git push
 
+版本恢复
+
+```js
+1.reset命令恢复到之前某个提交的版本，且那个版本之后提交的版本我们都不要了，就可以用这种方法。
+
+git log 查看版本号
+
+git reset --hard xxxxx  回退到版本号
+
+git push -f  强制提交
+
+2.revert命令只改某个版本，前后版本都不影响。
+
+git log 查看版本号
+
+git revert -n xxx
+
+git push
+```
+
 已经使用git commit -m 'xxx'将代码提交到了本地仓库，但是我后续还想向这个提交中添加文件
 首先将你想添加到文件使用git add xxx加入暂存区
 git commit --amend 会打开一个编辑器，让你编辑上一次提交的提交信息
