@@ -53,7 +53,7 @@
     // 200px at 0 0代表：圆心在左上角，半径为200px
     // 200px at 0 100%代表：圆心在左下角，半径为200px
    ```
-11. css动态变量：
+10. css动态变量：
 
     ```js
     <p class="size" style="--width: 100px">动态演示</p>
@@ -67,9 +67,10 @@
       max-width: calc(100% - var(--actions-width, 120px)) 
     }
     ```
-12. grid布局
-
-13. gspa动画库, [基础概念](http://www.lixianglong.cn/2024/07/30/application/fore-end/threejs/GSAP%E5%8A%A8%E7%94%BB%E5%8F%82%E7%85%A7%E8%AF%A6%E8%A7%A3/)
+11. grid布局  
+    grid 比 Flex 简单，因为基本不用切换主轴和交叉轴的概念
+    
+12. gspa动画库, [基础概念](http://www.lixianglong.cn/2024/07/30/application/fore-end/threejs/GSAP%E5%8A%A8%E7%94%BB%E5%8F%82%E7%85%A7%E8%AF%A6%E8%A7%A3/)
 
     ```js
     import gsap from "gsap";

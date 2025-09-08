@@ -1,3 +1,17 @@
+1.import导入  
+```
+import {a,b} from './a.js'
+// 这种写法要求a.js有 export const a、export const b 等具名导出  
+
+import xxx from 'module';
+// 这种写法要求模块导出中必须有 export default xxx  
+
+import * as mod from 'module';
+// 将模块的所有导出整合到一个对象模块mod上，这种形式的写法能避免逐个列出引用。在写法上更简洁，但使用起来不如具名导出方便。
+
+
+```
+
 ```javascript
 // 同源策略主要限制的是 JavaScript 发起的异步请求（如 AJAX），而不是表单提交
 // 使用 contains 方法来实现检测元素之外的点击
@@ -104,8 +118,4 @@ const {a,b:{c}} = obj
 // includes和indexOf对unll和undefined是不同的标准，indexOf() 是使用的严格相等算法（===），而includes() 是使用的是抽象相等算法（==）。使用时需要注意
 
 LRU（Least Recently Used）缓存是一种缓存淘汰策略，用于在缓存容量有限的情况下，决定哪些数据需要被移除。其核心思想是：当缓存满了，需要移除最久未被使用的数据，以给新的数据腾出空间。
-
-
-
-
 ```
