@@ -27,10 +27,35 @@
    ```
 7. gsap不遵守开源协议的动画库。
 8. [移动端使用 100vh 导致页面出现滚动条](https://juejin.cn/post/7402916277272739890)
-9.
-10. css动态变量：
+9. clip-path
+   ```js
+    <div class="img-box">
+      <svg width="0" height="0">
+        <defs>
+          <clipPath id="clipPath">
+            <path transform="scale(2)" d="" />
+          </clipPath>
+        </defs>
+      </svg>
+      <img src="" style="clip-path: url(#clipPath)" />
+    </div>
+    // svg放大缩小可通过transform去处理，使用svg的width和height以及viewBox是无效的
+    // 如何解决hover状态下，如果svg是异形的会导致hover效果抖动？
+    // 解决方案：hover状态添加到div中，而不是img中。
+    .img-box{
+      &:hover{
+        img{
+          clip-path: url(#clipPath)
+        }
+      }
+    }
+    // clip-path: circle(radio at x y) radio: 半径，x y: 距离圆心坐标
+    // 200px at 0 0代表：圆心在左上角，半径为200px
+    // 200px at 0 100%代表：圆心在左下角，半径为200px
+   ```
+11. css动态变量：
 
-    ```html
+    ```js
     <p class="size" style="--width: 100px">动态演示</p>
     .size {
       width: var(--width);
@@ -42,7 +67,9 @@
       max-width: calc(100% - var(--actions-width, 120px)) 
     }
     ```
-11. gspa动画库, [基础概念](http://www.lixianglong.cn/2024/07/30/application/fore-end/threejs/GSAP%E5%8A%A8%E7%94%BB%E5%8F%82%E7%85%A7%E8%AF%A6%E8%A7%A3/)
+12. grid布局
+
+13. gspa动画库, [基础概念](http://www.lixianglong.cn/2024/07/30/application/fore-end/threejs/GSAP%E5%8A%A8%E7%94%BB%E5%8F%82%E7%85%A7%E8%AF%A6%E8%A7%A3/)
 
     ```js
     import gsap from "gsap";
@@ -50,31 +77,46 @@
     gsap.registerPlugin(ScrollTrigger)
     // 引入ScrollTrigger
     gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: dom,     // 引入滑动效果的块
-            start: 'top 70%', // 滚动条顶部的距离
-            end: '+=800',     // 每滚动多少距离执行一次效果
-            scrub: 1,
-            toggleActions: 'play none reverse none'
-          }
-        })
-        .to(".select-line", { // 需要动画移动的类名
-          stagger: 0.1,       // 每个动画的起始时间间隔
-          y: -20,             // dom向y轴移动距离
-          keyframes: {
-            '0%': { color: '#ccc' },
-            '25%': { color: '#4c4c4c' },
-            '50%': { color: '#ffffff' },
-            '75%': { color: '#ffffff' },
-            '100%': { color: '#ffffff' }
-          }
-        })
+      .timeline({
+        scrollTrigger: {
+          trigger: dom,     // 引入滑动效果的块
+          start: 'top 70%', // 滚动条距离trigger的位置,触发动画两个值，一个是动画开始的位置，一个是动画的锚点
+          end: 'top 70%',     // 和start一样使用量值，一个结束位置，一个锚点
+          pin: dom,             // 固定元素, 可以使用".class", "#id"等的选择器文本
+          scrub: 1,         // 将动画的进度直接链接到滚动条
+          markers: true, // 在开发/故障添加标记, 可对象形式 { startColor: "red", endColor: "blue" }
+          toggleActions: 'play none reverse none' // 滚动条触发动画的四个状态，play, pause, resume, restart
+        }
+      })
+      .to(".select-line", { // 需要动画移动的类名
+        stagger: 0.1,       // 每个动画的起始时间间隔
+        y: -20,             // dom向y轴移动距离
+        keyframes: {
+          '0%': { color: '#ccc' },
+          '25%': { color: '#4c4c4c' },
+          '50%': { color: '#ffffff' },
+          '75%': { color: '#ffffff' },
+          '100%': { color: '#ffffff' }
+        }
+      })
     /*
       to():从初始状态到目标状态，form():和to反过来，fromTo()：自定义起始值和结束值
       pin: true // 有点类似fixed的效果
       scrub: 1  // 缓冲动画的延迟时间
+      .to(".class", { x: 100 }, "<") 这里的<表示插入到动画的开头。如果是>表示插入到动画的结尾
+      .to(".class", { x: 100 }, "<+0.5") 表示在动画开始0.5s后开始动画.
+      例如：
+        tl.to(".box", {x: 100, duration: 1});
+        tl.to(".box", { y: 100 }, "<");
+      这个动画效果就是一边向右移动，一边向下移动，右移动会持续一秒钟，但是向下是一瞬间。
     */
+    /**
+     * fromTo()：自定义起始值和结束值，这对于完全控制动画非常有用，尤其是当它与其他动画链接时
+     * formTo('dom', {},{}) 两个对象中是起始和结束位置的属性
+     */
+    // Staggers（交错动画）
+    // 如何设置动画的结束后启动另外一个动画
+
     ```
 
 ```

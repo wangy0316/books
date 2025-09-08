@@ -24,7 +24,7 @@ git reset --hard xxxxx  回退到版本号
 
 git push -f  强制提交
 
-2.revert命令只改某个版本，前后版本都不影响。
+2.revert命令只改某个版本，前后版本都不影响。不会改变已提交的信息，会生成新的提交信息。
 
 git log 查看版本号
 

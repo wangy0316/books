@@ -2,6 +2,13 @@
 // 同源策略主要限制的是 JavaScript 发起的异步请求（如 AJAX），而不是表单提交
 // 使用 contains 方法来实现检测元素之外的点击
 
+// toLocaleString方法
+let num=12345678;
+console.log(num.toLocaleString()); // 12,345,678
+console.log(new Date().toLocaleString() // 2021/10/12 下午7:39:06
+console.log(new Date().toLocaleString('chinese',{hour12:false}))  // 2021/10/12 19:39:06
+
+
 // 返回什么值
 console.log('b', arr.length && 'a')
 // 这里会判断arr是否为true，如果是true则返回'a', 如果为false，那么这里就返回false。
@@ -97,6 +104,8 @@ const {a,b:{c}} = obj
 // includes和indexOf对unll和undefined是不同的标准，indexOf() 是使用的严格相等算法（===），而includes() 是使用的是抽象相等算法（==）。使用时需要注意
 
 LRU（Least Recently Used）缓存是一种缓存淘汰策略，用于在缓存容量有限的情况下，决定哪些数据需要被移除。其核心思想是：当缓存满了，需要移除最久未被使用的数据，以给新的数据腾出空间。
+
+
 
 
 ```

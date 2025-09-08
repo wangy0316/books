@@ -34,7 +34,6 @@ export default echarts
 ````
 
 ```
-
 // 图表宽度太小，重设宽度
 this.chart.resize()
 // 如果页面有多个图表，需要动态id传入。
@@ -51,4 +50,6 @@ xAxis: {
     formatter: (value)=>{}
   }
 }
+// y轴设置坐标轴在 grid 区域中的分隔线
+yAxis.splitLine.show
 ```
