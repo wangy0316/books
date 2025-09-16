@@ -1,3 +1,5 @@
+[Dotenv](https://dotenv.nodejs.cn/docs/#-install) 是一个零依赖模块，可将环境变量从 .env 文件加载到 process.env 中
+
 图像识别文字：umi-OCR:、onnx
 
 [自动表格计算AutoCalculate](https://juejin.cn/post/6873694006736322573?searchId=202507211114242DC18B9F76F2DC410F02#heading-14)

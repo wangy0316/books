@@ -8,8 +8,6 @@ import xxx from 'module';
 
 import * as mod from 'module';
 // 将模块的所有导出整合到一个对象模块mod上，这种形式的写法能避免逐个列出引用。在写法上更简洁，但使用起来不如具名导出方便。
-
-
 ```
 
 ```javascript
