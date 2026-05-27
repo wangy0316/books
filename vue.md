@@ -109,6 +109,15 @@ request({
 
 [乐观锁机制解决多次请求，但是请求快慢导致数据展示错误](https://juejin.cn/post/7516729363015024677)
 
+拿到一个陌生项目时，按以下顺序确认 Node 版本要求，避免出现 npm 安装报错或运行时错误：
+查看项目根目录是否有 .nvmrc 文件，该文件会明确指定项目使用的 Node 版本。
+查看 package.json 中的 engines 字段，确认 Node 和 npm 的版本要求。
+如果以上都没有，查看 CI 配置文件（如 .github/workflows/*.yml）中使用的 Node 版本，CI 环境通常会使用项目兼容的版本。
+执行 npm install 观察是否有 Unsupported engine 警告，或运行时报错的堆栈信息，根据警告/报错反推所需 Node 版本。
+使用 npm ls <package-name> 查看特定依赖的版本树，结合其 engines 要求，反推项目所需的 Node 版本。
+
+创建 .nvmrc 文件，写入项目使用的 Node 版本号（如 v20.19.0），方便开发者用 nvm use 快速切换
+
 // 使用方括号 [] 动态设置对象的键
 const key = "dynamicKey";
 const obj = {
@@ -153,26 +162,56 @@ template 中的HTML 最终也是使用渲染函数生成对应的VNode函数。
 
 # vue3
 
-```
+```js
+// 为什么ref需要.value来访问值，而reactive不需要？
+// ref是一个对象的包装，ref.value是对象的属性值。
+// reactive 是一个函数，它接受一个对象并返回该对象的响应式代理，也就是 Proxy
+
 // Vue 3中不再推荐使用.sync，转而用带参数的v-model
 <child v-model:name="userName" v-model:age="userAge" />
 
 // shallowReactive它只会监听对象的顶层属性变化,比reactive更节约性能。
 const data = shallowReactive({
-    name: 'zhangsan',
-    age: 18,
-    address: {
-      name: 'beijing',
-    },
-    list: [1,2]
- })
+  name: 'zhangsan',
+  age: 18,
+  address: {
+    name: 'beijing',
+  },
+  list: [1,2]
+})
 // 直接修改address.name页面是不会更新的。但是修改address页面会更新。其次同时修改age和address.name页面也会更新。
 
 // reactive结构会造成响应丢失。可以通过toRefs将响应式对象转换为多个ref
+const user = reactive({
+  name: 'zhangsan',
+  age: 18,
+  email: 'zhangsan@example.com',
+})
 const { name, age, email } = toRefs(user)
-name.value = 123 // 这里的name依旧具有响应式
+name.value // 这里的name依旧具有响应式
 
 // Teleport 将内容“传送”到指定位置。解决样式覆盖、层级错乱这些老大难问题
 <Teleport to="body"></Teleport>
 
+// Map / Set / WeakMap 不是 Vue 的响应式代理对象
+const count = ref(0)
+const map = new Map()
+map.set('count', count)
+map.get('count')        // 拿到的是 ref 对象
+map.get('count').value  // 这是正确取值
+
+v-memo 优化大型列表渲染性能
+
 ```
+
+# 构建环境
+
+import.meta.env 和 process.env 的区别  
+process.env 是 Node.js 的环境变量接口 import.meta.env 是 Vite（ESM）在构建期注入的前端环境变量。  
+浏览器中无法访问 process.env，只能访问 import.meta.env。  
+都是在构建期注入，运行时无法读取。  
+vite环境变量必须以VITE_开头，比如VITE_APP_TITLE。
+
+# 安全性
+
+import.meta.env 里的变量 ≠ 私密

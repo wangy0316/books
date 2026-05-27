@@ -47,6 +47,11 @@ outputDir: String.raw`D:\html\vue\gs\dist`,
 
 打包不删除原打包后的文件，在script命令中添加--no-clean
 
+Select 下拉框的样式调试
+打开 DevTools 的 More tools 菜单，选择 Rendering，勾选 Emulate a focused page 选项
+
+设置文件的 HTTP 响应头（Response Headers），显式指定 Content-Disposition 为 attachment 即可在不同源的页面上下载文件
+
 纯函数：
 
 * 函数的执行过程完全由输入参数决定，不会受除参数之外的任何数据影响。

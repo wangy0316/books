@@ -8,6 +8,12 @@ import xxx from 'module';
 
 import * as mod from 'module';
 // 将模块的所有导出整合到一个对象模块mod上，这种形式的写法能避免逐个列出引用。在写法上更简洁，但使用起来不如具名导出方便。
+// 也用于工具库导出了很多方法时，使用 * as xxx 的形式方便使用。比如lodash
+import { cloneDeep } from 'lodash'
+cloneDeep(obj)
+// 也可以直接整合为命名空间
+import * as _ from 'lodash'
+_.cloneDeep(obj)
 ```
 
 ```javascript
@@ -20,6 +26,24 @@ console.log(num.toLocaleString()); // 12,345,678
 console.log(new Date().toLocaleString() // 2021/10/12 下午7:39:06
 console.log(new Date().toLocaleString('chinese',{hour12:false}))  // 2021/10/12 19:39:06
 
+//随机数，现代浏览器（还有 Node.js14 以上的版本），http不可用，必须https
+crypto.randomUUID() // 生成一个随机UUID
+// 可手动让ai写一个uuid
+
+/**
+ * 在循环中使用 await
+ * 1.for of循环里用 await，效率太低，因为每次循环都会等待上一次循环完成，所以效率很低。如果下个接口依赖上一个接口数据可使用for of循环
+ * 2.map 里直接用 await，拿到的全是 Promise，需要用 Promise.all() 来处理，效率也不高。且只要有一个请求失败，整个操作就会报错，即使其他请求都成功了，也拿不到任何结果。
+ * 3.用 Promise.allSettled()，保留所有结果。即便部分请求失败，也能拿到所有结果，之后可手动判断成功与否
+ * 4.在 map 里加 try/catch，返回兜底值
+ * 5.forEach() 不会等待异步回调，请求会在后台乱序执行，可能导致代码逻辑出错、错误被遗漏。
+ */
+
+/**
+ * try/catch捕获不了 Promise 内部错误（得用 .catch()）
+ * try/catch可以捕捉async/await内部错误
+ * async 函数一定会返回一个 Promise。async 函数return一个值，会自动包装成Promise.resolve(value)
+ */
 
 // 返回什么值
 console.log('b', arr.length && 'a')
@@ -112,6 +136,10 @@ const {a,b:{c}} = obj
   const value = []  
   return value
 } , [])
+
+// localStorage，不同tab之间的数据共享，可监听变化事件。
+// sessionStorage，不同tab之间的数据不共享，设计之初就是让不同tab拥有独立环境，防止数据冲突。
+// Broadcast Channel API一个更现代、更优雅的 API，专门用于同源下的跨上下文通信（Tab、Iframe、Worker）。
 
 // includes和indexOf对unll和undefined是不同的标准，indexOf() 是使用的严格相等算法（===），而includes() 是使用的是抽象相等算法（==）。使用时需要注意
 

@@ -1,20 +1,35 @@
-全局配置（main.js）
+# 全局配置（main.js）
 
+```js
 1. dialog中是否可以通过点击 modal 关闭 Dialog，需要设置close-on-click-modal:false，
-   只需要配置Element.Dialog.props.closeOnClickModal.default = false就可实现全局不可关闭
-2.
+   只需要配置Element.Dialog.props.closeOnClickModal.default = false就可实现全局不可关闭  
+2. table中是否显示边框，需要配置Element.Table.props.border.default = true就可实现全局显示边框  
+  // 上述border配置不一定生效，需要使用defineProperties来配置
+  Object.defineProperties(ElTable.props, {
+    border: {
+      value: {
+        type: Boolean,
+        default: true,
+      },
+    },
+  })
+3. button中按钮大小。
+  ElButton.props.size = {
+    type: String,
+    default: 'small',
+  }
+
+```
 
 关于key导致form校验不生效，由于form-item默认是隐藏的，当展示form-item的时候由于key的原因没有重新渲染，于是导致校验不触发。
-
 
 toggleRowSelection无法勾选的问题
 
 数据源问题，我们每次请求回来的表格数据，即便数据一模一样，数据对象存储地址的指针不同也会导致失败。 toggleRowSelection 需要接收表格数据中的一项。如果传递的 row 对象与 el-table 的数据源不一致，方法将无法正确选中或取消选中行，必须从数据列表中找到值。
 
-
 tree去掉选中后的背景色
 
-```
+```js
 this.$refs.tree.setCurrentKey(null)
 // 更改选中颜色和hover
 ::v-deep .el-tree-node{
@@ -49,7 +64,7 @@ el-menu中，不要给el-submenu添加popper-append-to-body属性，不然当鼠
 在循环中如何设置单独的el-popover
 通过v-model控制el-popover的显隐，控制显隐使用鼠标事件mouseenter和mouseleave
 
-```
+```js
 <span @mouseenter="onMouseEnter($event)"  @mouseleave="onMouseLeave">popover</span>
 <el-popover
  ref="popover"
@@ -76,7 +91,7 @@ onMouseLeave(){
 
 table项合并
 
-```
+```js
 // key是table展示的字段，target是合并字段，有时候需求中合并字段不一定是展示字段。比如第二列是根据第一列合并的。
 const mergeKeys = [
   {key: 'a', target: 'b'
