@@ -26,6 +26,8 @@
 toggleRowSelection无法勾选的问题
 
 数据源问题，我们每次请求回来的表格数据，即便数据一模一样，数据对象存储地址的指针不同也会导致失败。 toggleRowSelection 需要接收表格数据中的一项。如果传递的 row 对象与 el-table 的数据源不一致，方法将无法正确选中或取消选中行，必须从数据列表中找到值。
+高版本的已经解决了这个问题，需要中table中添加:row-key="row => row.id"属性。
+selection中添加 :reserve-selection="true"
 
 tree去掉选中后的背景色
 
