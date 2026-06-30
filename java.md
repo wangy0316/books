@@ -17,6 +17,8 @@ SpringBootApplication标注在某个类，运行这个类的main方法来启动S
 ```
 @Configuration: 用于标识一个类为配置类，该类主要用于定义和组织 Spring 应用程序的配置信息
 @Override :关键且常用的‌标记型注解（Marker Annotation）‌。它的主要作用是显式地声明某个方法旨在‌重写（Override）‌父类或接口中的方法
+@Service：业务层组件注解.用于标识组件的注解，核心作用都是让Spring容器扫描到被标注的类
+@Component：通用组件注解.用于标识组件的注解，核心作用都是让Spring容器扫描到被标注的类
 ```
 
 ### 层级结构
@@ -42,7 +44,9 @@ public interface userMapper {
     int insert(user record)
 }
 ```
-service层给controller层的类提供接口调用
+service层给controller层的类提供接口,仅包含方法声明，不涉及具体实现逻辑.
+service文件夹的接口定义了业务逻辑的"做什么"，impl文件夹的实现类负责"怎么做"
+service层中还有一个impl层，impl文件夹主要用于存放接口的具体实现类，是代码分层设计里的重要组成部分。
 ```
 
 ```
