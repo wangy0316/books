@@ -1,0 +1,91 @@
+package com.example.demo.common;
+
+import java.io.Serializable;
+
+public class Result<T> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private Integer code;
+    private String message;
+    private T data;
+    private Long timestamp;
+
+    public Result() {
+    }
+
+    public Result(Integer code, String message, T data, Long timestamp) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+        this.timestamp = timestamp;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public static <T> Result<T> success(T data) {
+        return new Result<T>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data, System.currentTimeMillis());
+    }
+
+    public static <T> Result<T> success(String message, T data) {
+        return new Result<T>(ResultCode.SUCCESS.getCode(), message, data, System.currentTimeMillis());
+    }
+
+    public static <T> Result<T> success() {
+        return new Result<T>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), null, System.currentTimeMillis());
+    }
+
+    public static <T> Result<T> error(ResultCode resultCode) {
+        return new Result<T>(resultCode.getCode(), resultCode.getMessage(), null, System.currentTimeMillis());
+    }
+
+    public static <T> Result<T> error(Integer code, String message) {
+        return new Result<T>(code, message, null, System.currentTimeMillis());
+    }
+
+    public static <T> Result<T> error(String message) {
+        return new Result<T>(ResultCode.FAIL.getCode(), message, null, System.currentTimeMillis());
+    }
+
+    public static <T> Result<T> unauthorized() {
+        return new Result<T>(ResultCode.UNAUTHORIZED.getCode(), ResultCode.UNAUTHORIZED.getMessage(), null, System.currentTimeMillis());
+    }
+
+    public static <T> Result<T> forbidden() {
+        return new Result<T>(ResultCode.FORBIDDEN.getCode(), ResultCode.FORBIDDEN.getMessage(), null, System.currentTimeMillis());
+    }
+
+    public static <T> Result<T> notFound() {
+        return new Result<T>(ResultCode.NOT_FOUND.getCode(), ResultCode.NOT_FOUND.getMessage(), null, System.currentTimeMillis());
+    }
+}
