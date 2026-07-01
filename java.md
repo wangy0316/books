@@ -1,17 +1,11 @@
-### 项目构成：
-1.mysql
-2.redis
-3.api接口
-4.鉴权
-5.统一接口信息
-6.流文件
-7.
+### 设计
+在java中，一个单独的java文件是无法通过java xxx.java运行的，需要先编译，再运行。通过javac xxx.java编译，生成一个xxx.class文件，这个class文件称为字节码文件，再通过java xxx运行。
 
 ### 基础概览
 
-SpringBootApplication标注在某个类，运行这个类的main方法来启动SpringBoot应用
-配置文件放在 src/main/resources目录application.yml文件
-
+1.SpringBootApplication标注在某个类，运行这个类的main方法来启动SpringBoot应用
+2.配置文件放在 src/main/resources目录application.yml文件
+3.实体类: 通常位于 entity 或 model 包下,User.java, System.java.用于存储数据库中的数据的类，通常对应数据库中的一个表。
 ### 配置类
 
 ```
@@ -21,6 +15,7 @@ SpringBootApplication标注在某个类，运行这个类的main方法来启动S
 @Component：通用组件注解.用于标识组件的注解，核心作用都是让Spring容器扫描到被标注的类
 ```
 
+## springboot
 ### 层级结构
 
 domain层存放实体类，于数据库中的属性保持一致，存放属性和操作属性的get，set方法
@@ -38,24 +33,71 @@ public class user {
     }
 }
 ```
-mapper层针对数据库进行操作，主要实现增删改查等操作。于mybatis中方法一一映射
+mapper层针对数据库进行操作，主要实现增删改查等操作。于mybatis中方法一一映射。mapper接口中定义的方法，会自动被mybatis-plus实现。mybatis-plus有Service Interface，用于定义业务逻辑。Mapper Interface，用于定义数据库操作。
 ```
-public interface userMapper {
-    int insert(user record)
+@Mapper
+public interface UserMapper extends BaseMapper<User> {
+    // MyBatis-Plus 已提供基础 CRUD，复杂 SQL 可在此定义
+    User selectById(Long id);
 }
 ```
 service层给controller层的类提供接口,仅包含方法声明，不涉及具体实现逻辑.
 service文件夹的接口定义了业务逻辑的"做什么"，impl文件夹的实现类负责"怎么做"
 service层中还有一个impl层，impl文件夹主要用于存放接口的具体实现类，是代码分层设计里的重要组成部分。
 ```
+@Service
+public class UserServiceImpl implements UserService {
+    @Autowired
+    private UserMapper userMapper;
 
+    @Override
+    public List<User> getAllUsers() {
+        // 业务逻辑：例如权限校验、数据过滤
+        return userMapper.selectList(null);
+    }
+}
 ```
 
 controller是给前端提交接口
 ```
+@RestController
+@RequestMapping("/user")
+public class UserController {
+    @Autowired
+    private UserService userService;
 
+    @GetMapping("/list")
+    public List<User> list() {
+      // 只负责调用 Service 并返回结果
+      return userService.getAllUsers();
+    }
+}
 ```
 
+```
+// 不分层架构：
+@RestController
+public class UserController {
+
+  // 直接在 Controller 中注入 SqlSessionFactory 或 JdbcTemplate，甚至硬编码 SQL
+  @Autowired
+  private JdbcTemplate jdbcTemplate; 
+
+  @GetMapping("/users")
+  public List<User> getUsers() {
+    // 1. 表现层逻辑：接收请求（此处省略参数处理）
+    
+    // 2. 业务层逻辑：假设这里有一些复杂的判断
+    System.out.println("正在查询用户...");
+    
+    // 3. 持久层逻辑：直接编写 SQL 并执行
+    String sql = "SELECT * FROM user";
+    List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+    
+    return users;
+  }
+}
+```
 ### Mybatis拦截器
 mybatis-config.xml中引入拦截器
 
@@ -103,3 +145,118 @@ public class MyInterceptor implements Interceptor {
 }
 ```
 
+### 概念
+1.spring mvc框架
+  1.1 Spring 3.1及以后版本中，推荐使用Java配置而非XML配置。springMvc注解，主要用于‌控制请求映射‌、‌绑定请求参数‌以及‌处理响应数据‌，是开发 Java Web 应用时的核心工具。常用的核心注解包括 ‌@Controller‌、‌@RestController‌、‌@RequestMapping‌、‌@RequestParam‌、‌@PathVariable‌ 和 ‌@ResponseBody‌ 等。
+  @Controller 控制器注释，返回视图，以html和jsp等视图引擎渲染
+  ‌@RestController‌ 控制器注释，返回json数据，前后端分离。
+  @RequestMapping 控制器方法注释，指定请求路径
+  @RequestParam 控制器方法参数注释，绑定请求参数
+  @PathVariable 控制器方法参数注释，绑定路径变量
+  @ResponseBody 控制器方法返回值注释，返回json数据
+2.springBoot框架
+  将spring, spring mvc框架和mybatis-plus框架整合起来，形成一个完整的spring boot应用。
+  @Component 注解，将类标记为组件，自动扫描并加载到spring容器中。
+3.mybatis-plus框架
+  3.1 updateById方法，根据id更新数据。不需要在路径中拼接id，直接在RequestBody中传递id。
+  3.2 从3.4.0开始，mybatis-plus支持分页插件。需要用户在配置类中配置分页插件。
+  3.3 常用字段注解：
+    @TableField(value = "create_time", fill = FieldFill.INSERT)：在插入时自动填充字段值
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")：在返回json数据时，格式化时间字段
+4.bean
+  ‌Bean‌ 是由 ‌Spring IoC 容器‌（控制反转容器）管理的一个对象。在传统的 Java 开发中，对象通常由开发者通过 new 关键字手动创建；而在 Spring Boot 中，对象的创建、初始化、销毁等生命周期全部交给 Spring 容器统一管理。这些被容器管理的对象就称为 ‌Bean‌。
+  使用@Autowired注解，自动注入依赖。
+5.maven项目
+6.Lombok框架
+  6.1 Lombok是一个Java库，它消除了重复的代码，使开发人员能够更快速地编写代码。它通过注解的方式自 动为 Java 类生成常用的样板代码（Boilerplate Code），从而极大地简化了 Java 开发过程.
+  常用注解示例:
+  @Data‌：最常用的注解，等同于同时使用 @Getter、@Setter、@RequiredArgsConstructor、@ToString 和 @EqualsAndHashCode。适用于大多数数据载体类（如 Entity、DTO）。
+  ‌@Getter / @Setter‌：仅为指定字段生成 getter 或 setter 方法。
+  ‌@NoArgsConstructor / @AllArgsConstructor‌：生成无参构造器或全参构造器。
+  ‌@Builder‌：提供构建者模式（Builder Pattern）的支持，方便链式调用创建对象，特别适用于字段较多的类。
+  ‌@Slf4j‌：自动生成一个名为 log 的 SLF4J 日志对象，方便直接在类中进行日志记录。
+  ‌@NonNull‌：在方法参数或字段上使用，自动生成空值检查代码，若传入 null 则抛出
+
+
+## java基础
+### 数组
+java中数组是一种特殊的变量，它可以存储多个相同类型的变量。数组的定义和使用如下：
+```
+// 已知元素个数
+int[] arr = {1,2,3};
+String[] arr2 = {"a","b","c"};
+
+// 已知个数，具体后续填充。这里arr是一个int类型的数组，它可以存储5个int类型的变量。
+int[] arr = new int;
+
+// 未知个数，具体后续填充。这里arr是一个int类型的数组，它可以存储任意多个int类型的变量。
+int[] arr = new int[0];
+
+// 已知个数，限定后续填充的元素类型。这里arr是一个int类型的数组，它可以存储5个int类型的变量。
+int[] arr = new int[5];
+```
+
+### 构造方法
+1.方法名与类名相同，大小写一致
+2.没有返回值
+3.可以有多个构造方法
+4.默认构造方法
+5.有参构造方法
+6.无参构造方法
+7.构造方法可以调用其他构造方法
+
+#### 构造方法调用
+1.每次new一个对象，就会调用一个构造方法，不需要手动调用
+2.构造方法可以调用其他构造方法
+
+### 静态方法
+1.方法名前加static关键字
+2.静态方法只能调用静态方法和静态变量，不能调用非静态变量、方法。
+3.非静态方法可以调用静态方法和静态变量
+4.静态方法没有this关键字
+静态随着类的加载而加载（加载静态的时候可能都没有非静态变量和方法），非静态随着对象的创建而加载
+
+### 继承
+1.输入本类的变量使用this.变量名
+2.输入父类的变量使用super.变量名
+3.override重写父类的方法,需要重写的方法名和参数列表与父类的方法名和参数列表相同
+
+
+### 多态
+```
+Fu z = new Zi();
+这里的Fu就是多态形式，z只是一个变量，这里调用的是Fu类的方法
+Zi z = new Zi();
+这里的Zi就是多态形式，z只是一个变量，这里调用的是Zi类的方法
+多态可以实现不同的对象调用不同的方法
+```
+1.为什么需要多态，多态能解决什么问题？
+2.什么是类型转换，类型转换解决了什么问题？
+
+### 接口(implements)
+1.接口就是一个规则，独立于继承体系之外
+1.接口是一种特殊的类，它没有方法体，只有方法的声明
+2.接口可以实现多态，因为接口是一个抽象类，所以可以被实现类实现
+
+### 内部类
+1.有几种内部类
+
+```
+静态内部类只能访问外部类的静态变量和方法，如果想访问非静态变量和方法，需要创建外部类的对象
+public class Outer {
+  int a = 1;
+  static int b = 2;
+  public class Inner {
+    public static void fn() {
+      Outer o = new Outer();
+      System.out.println(o.a);
+      // 静态内部类只能访问外部类的静态变量和方法
+      System.out.println(b);
+    }
+  }
+}
+```
+### 问题
+1.使用构造方法初始化对象和使用get、set方法初始化对象的区别
+2.多态中，什么是变量调用编译看左边，运行看左边。方法调用编译看左边，运行看右边。
+3.什么时候用匿名类，匿名类有什么作用？匿名类和lambda表达式有什么区别？
