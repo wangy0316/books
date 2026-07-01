@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.common.Result;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 
@@ -17,7 +18,7 @@ public class UserController {
   private UserService userService;
 
   @GetMapping("/user")
-  public List<User> user() {
-    return userService.getUser();
+  public Result<List<User>> user() {
+    return Result.success(userService.getUser());
   }
 }
