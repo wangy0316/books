@@ -15,8 +15,10 @@ public class CodeGenerator {
     FastAutoGenerator
         .create("jdbc:mysql://localhost:3306/demo?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true", "root",
             "qwe123456")
-        .globalConfig((scanner, builder) -> builder.author(scanner.apply("请输入作者名称？")).outputDir("src\\main\\java\\com\\example\\demo"))
-        .packageConfig((scanner, builder) -> builder.parent(scanner.apply("请输入包名？")))
+        .globalConfig((scanner, builder) -> builder.author(scanner.apply("请输入作者名称？")).outputDir(
+            System.getProperty("user.dir")
+                + "/src/main/java"))
+        .packageConfig((scanner, builder) -> builder.parent("com.example.demo"))
         .strategyConfig((scanner, builder) -> builder.addInclude(getTables(scanner.apply("请输入表名，多个英文逗号分隔？所有输入 all")))
             .entityBuilder()
             .enableLombok()

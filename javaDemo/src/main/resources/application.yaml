@@ -6,10 +6,9 @@ spring:
     username: root
     password: qwe123456
     driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
   devtools:
     restart:
       enabled: true
+  mybatis-plus:
+    configuration:
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
