@@ -1,6 +1,8 @@
 ### 快捷键
 
 1.shift + alt + o 导入类排序
+2.ctrl + t 查询接口方法
+3.ctrl+shift+o 查看当前文件的大纲
 
 ### 设计
 在java中，一个单独的java文件是无法通过java xxx.java运行的，需要先编译，再运行。通过javac xxx.java编译，生成一个xxx.class文件，这个class文件称为字节码文件，再通过java xxx运行。
