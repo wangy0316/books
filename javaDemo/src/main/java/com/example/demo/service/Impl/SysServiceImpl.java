@@ -22,8 +22,8 @@ public class SysServiceImpl extends ServiceImpl<SysMapper, Sys> implements ISysS
   }
 
   @Override
-  public boolean deleteSys(Sys sys) {
-    return baseMapper.deleteById(sys) > 0;
+  public boolean deleteSys(Long id) {
+    return baseMapper.deleteById(id) > 0;
   }
 
   @Override

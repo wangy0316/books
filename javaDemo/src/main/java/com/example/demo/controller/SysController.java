@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import com.example.demo.service.ISysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.demo.entity.Sys;
@@ -25,9 +26,9 @@ public class SysController {
     return Result.success(sysService.addSys(sys));
   }
 
-  @DeleteMapping("/delete")
-  public Result<Boolean> deleteSys(@RequestBody Sys sys) {
-    return Result.success(sysService.deleteSys(sys));
+  @DeleteMapping("/delete/{id}")
+  public Result<Boolean> deleteSys(@PathVariable Long id) {
+    return Result.success(sysService.deleteSys(id));
   }
 
   @PutMapping("/update")

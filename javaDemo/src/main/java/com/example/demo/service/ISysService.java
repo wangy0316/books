@@ -7,6 +7,6 @@ import java.util.List;
 public interface ISysService extends IService<Sys> {
   List<Sys> getSysList();
   boolean addSys(Sys sys);
-  boolean deleteSys(Sys sys);
+  boolean deleteSys(Long id);
   boolean updateSys(Sys sys);
 }
