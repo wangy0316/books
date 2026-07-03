@@ -1,10 +1,9 @@
 package com.example.demo.mapper;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.demo.entity.Sys;
 
 /**
@@ -17,5 +16,5 @@ import com.example.demo.entity.Sys;
  */
 @Mapper
 public interface SysMapper extends BaseMapper<Sys> {
-  List<Sys> selectList();
+  IPage<Sys> selectList(IPage<Sys> page);
 }
