@@ -25,8 +25,8 @@
 ### 层级结构
 
 domain层存放实体类，于数据库中的属性保持一致，存放属性和操作属性的get，set方法
-```
-public class user {
+```java
+public class User {
     private String id;
     private String name;
 
@@ -40,7 +40,7 @@ public class user {
 }
 ```
 mapper层针对数据库进行操作，主要实现增删改查等操作。于mybatis中方法一一映射。mapper接口中定义的方法，会自动被mybatis-plus实现。mybatis-plus有Service Interface，用于定义业务逻辑。Mapper Interface，用于定义数据库操作。
-```
+```java
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
     // MyBatis-Plus 已提供基础 CRUD，复杂 SQL 可在此定义
@@ -50,7 +50,7 @@ public interface UserMapper extends BaseMapper<User> {
 service层给controller层的类提供接口,仅包含方法声明，不涉及具体实现逻辑.
 service文件夹的接口定义了业务逻辑的"做什么"，impl文件夹的实现类负责"怎么做"
 service层中还有一个impl层，impl文件夹主要用于存放接口的具体实现类，是代码分层设计里的重要组成部分。
-```
+```java
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 ```
 
 controller是给前端提交接口
-```
+```java
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -80,8 +80,8 @@ public class UserController {
 }
 ```
 
-```
-// 不分层架构：
+不分层架构：
+```java
 @RestController
 public class UserController {
 
@@ -105,9 +105,10 @@ public class UserController {
 }
 ```
 ### Mybatis拦截器
+
 mybatis-config.xml中引入拦截器
 
-```
+```java
 @Intercepts：标识该类是一个拦截器
 @Signature：指明自定义拦截器需要拦截哪一个类型，哪一个方法；
     type：对应四种类型中的一种（Executor、StatementHandler、ParameterHandler、ResultSetHandler）；
@@ -118,7 +119,7 @@ mybatis-config.xml中引入拦截器
 
 ```
 固定写法
-```
+```java
 @Intercepts({
     @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
 })
@@ -221,7 +222,7 @@ LinkedHashMap<String, String> lhm = new LinkedHashMap<>();
 
 ### 数组
 java中数组是一种特殊的变量，它可以存储多个相同类型的变量。数组的定义和使用如下：
-```
+```java
 // 已知元素个数
 int[] arr = {1,2,3};
 String[] arr2 = {"a","b","c"};
@@ -263,12 +264,12 @@ int[] arr = new int[5];
 
 
 ### 多态
-```
+```java
 Fu z = new Zi();
-这里的Fu就是多态形式，z只是一个变量，这里调用的是Fu类的方法
+// 这里的Fu就是多态形式，z只是一个变量，这里调用的是Fu类的方法
 Zi z = new Zi();
-这里的Zi就是多态形式，z只是一个变量，这里调用的是Zi类的方法
-多态可以实现不同的对象调用不同的方法
+// 这里的Zi就是多态形式，z只是一个变量，这里调用的是Zi类的方法
+// 多态可以实现不同的对象调用不同的方法
 ```
 1.为什么需要多态，多态能解决什么问题？
 2.什么是类型转换，类型转换解决了什么问题？
@@ -281,7 +282,7 @@ Zi z = new Zi();
 ### 内部类
 1.有几种内部类
 
-```
+```java
 静态内部类只能访问外部类的静态变量和方法，如果想访问非静态变量和方法，需要创建外部类的对象
 public class Outer {
   int a = 1;
