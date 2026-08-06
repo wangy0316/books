@@ -1,3 +1,4 @@
+
 ### 快捷键
 
 1.shift + alt + o 导入类排序
@@ -5,6 +6,7 @@
 3.ctrl+shift+o 查看当前文件的大纲
 
 ### 设计
+
 在java中，一个单独的java文件是无法通过java xxx.java运行的，需要先编译，再运行。通过javac xxx.java编译，生成一个xxx.class文件，这个class文件称为字节码文件，再通过java xxx运行。
 
 ### 基础概览
@@ -12,9 +14,10 @@
 1.SpringBootApplication标注在某个类，运行这个类的main方法来启动SpringBoot应用
 2.配置文件放在 src/main/resources目录application.yml文件
 3.实体类: 通常位于 entity 或 model 包下,User.java, System.java.用于存储数据库中的数据的类，通常对应数据库中的一个表。
+
 ### 配置类
 
-```
+```java
 @Configuration: 用于标识一个类为配置类，该类主要用于定义和组织 Spring 应用程序的配置信息
 @Override :关键且常用的‌标记型注解（Marker Annotation）‌。它的主要作用是显式地声明某个方法旨在‌重写（Override）‌父类或接口中的方法
 @Service：业务层组件注解.用于标识组件的注解，核心作用都是让Spring容器扫描到被标注的类
@@ -22,10 +25,12 @@
 ```
 
 ## springboot
+
 ### 层级结构
 
 domain层存放实体类，于数据库中的属性保持一致，存放属性和操作属性的get，set方法
-```
+
+```java
 public class user {
     private String id;
     private String name;
@@ -39,18 +44,22 @@ public class user {
     }
 }
 ```
+
 mapper层针对数据库进行操作，主要实现增删改查等操作。于mybatis中方法一一映射。mapper接口中定义的方法，会自动被mybatis-plus实现。mybatis-plus有Service Interface，用于定义业务逻辑。Mapper Interface，用于定义数据库操作。
-```
+
+```java
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
     // MyBatis-Plus 已提供基础 CRUD，复杂 SQL 可在此定义
     User selectById(Long id);
 }
 ```
+
 service层给controller层的类提供接口,仅包含方法声明，不涉及具体实现逻辑.
 service文件夹的接口定义了业务逻辑的"做什么"，impl文件夹的实现类负责"怎么做"
 service层中还有一个impl层，impl文件夹主要用于存放接口的具体实现类，是代码分层设计里的重要组成部分。
-```
+
+```java
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -65,7 +74,8 @@ public class UserServiceImpl implements UserService {
 ```
 
 controller是给前端提交接口
-```
+
+```java
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -80,7 +90,7 @@ public class UserController {
 }
 ```
 
-```
+```java
 // 不分层架构：
 @RestController
 public class UserController {
@@ -104,10 +114,12 @@ public class UserController {
   }
 }
 ```
+
 ### Mybatis拦截器
+
 mybatis-config.xml中引入拦截器
 
-```
+```java
 @Intercepts：标识该类是一个拦截器
 @Signature：指明自定义拦截器需要拦截哪一个类型，哪一个方法；
     type：对应四种类型中的一种（Executor、StatementHandler、ParameterHandler、ResultSetHandler）；
@@ -117,8 +129,10 @@ mybatis-config.xml中引入拦截器
 @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})
 
 ```
+
 固定写法
-```
+
+```java
 @Intercepts({
     @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
 })
@@ -152,6 +166,7 @@ public class MyInterceptor implements Interceptor {
 ```
 
 ### 概念
+
 1.spring mvc框架
   1.1 Spring 3.1及以后版本中，推荐使用Java配置而非XML配置。springMvc注解，主要用于‌控制请求映射‌、‌绑定请求参数‌以及‌处理响应数据‌，是开发 Java Web 应用时的核心工具。常用的核心注解包括 ‌@Controller‌、‌@RestController‌、‌@RequestMapping‌、‌@RequestParam‌、‌@PathVariable‌ 和 ‌@ResponseBody‌ 等。
   @Controller 控制器注释，返回视图，以html和jsp等视图引擎渲染
@@ -185,9 +200,12 @@ public class MyInterceptor implements Interceptor {
 
 
 ## java基础
+
 ### 数组
+
 java中数组是一种特殊的变量，它可以存储多个相同类型的变量。数组的定义和使用如下：
-```
+
+```java
 // 已知元素个数
 int[] arr = {1,2,3};
 String[] arr2 = {"a","b","c"};
@@ -203,6 +221,7 @@ int[] arr = new int[5];
 ```
 
 ### 构造方法
+
 1.方法名与类名相同，大小写一致
 2.没有返回值
 3.可以有多个构造方法
@@ -212,10 +231,12 @@ int[] arr = new int[5];
 7.构造方法可以调用其他构造方法
 
 #### 构造方法调用
+
 1.每次new一个对象，就会调用一个构造方法，不需要手动调用
 2.构造方法可以调用其他构造方法
 
 ### 静态方法
+
 1.方法名前加static关键字
 2.静态方法只能调用静态方法和静态变量，不能调用非静态变量、方法。
 3.非静态方法可以调用静态方法和静态变量
@@ -223,31 +244,35 @@ int[] arr = new int[5];
 静态随着类的加载而加载（加载静态的时候可能都没有非静态变量和方法），非静态随着对象的创建而加载
 
 ### 继承
+
 1.输入本类的变量使用this.变量名
 2.输入父类的变量使用super.变量名
 3.override重写父类的方法,需要重写的方法名和参数列表与父类的方法名和参数列表相同
 
-
 ### 多态
-```
+
+```java
 Fu z = new Zi();
 这里的Fu就是多态形式，z只是一个变量，这里调用的是Fu类的方法
 Zi z = new Zi();
 这里的Zi就是多态形式，z只是一个变量，这里调用的是Zi类的方法
 多态可以实现不同的对象调用不同的方法
 ```
+
 1.为什么需要多态，多态能解决什么问题？
 2.什么是类型转换，类型转换解决了什么问题？
 
 ### 接口(implements)
+
 1.接口就是一个规则，独立于继承体系之外
 1.接口是一种特殊的类，它没有方法体，只有方法的声明
 2.接口可以实现多态，因为接口是一个抽象类，所以可以被实现类实现
 
 ### 内部类
+
 1.有几种内部类
 
-```
+```java
 静态内部类只能访问外部类的静态变量和方法，如果想访问非静态变量和方法，需要创建外部类的对象
 public class Outer {
   int a = 1;
@@ -262,7 +287,9 @@ public class Outer {
   }
 }
 ```
+
 ### 问题
+
 1.使用构造方法初始化对象和使用get、set方法初始化对象的区别
 2.多态中，什么是变量调用编译看左边，运行看左边。方法调用编译看左边，运行看右边。
 3.什么时候用匿名类，匿名类有什么作用？匿名类和lambda表达式有什么区别？

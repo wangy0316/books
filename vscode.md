@@ -20,3 +20,20 @@ ctrl+shift+p 打开命令行，可输入transform转换选中的字符为大小�
 // 插件
 vsc-nvm。项目运行自动执行nvm，能做到不同项目不同node版本。不需要设置统一的node版本。
 ```
+
+### 文件嵌套展示
+
+```json
+// 控制相关文件嵌套展示settings.json
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "$(capture).test.ts, $(capture).test.tsx, $(capture).spec.ts, $(capture).spec.tsx, $(capture).d.ts",
+    "*.tsx": "$(capture).test.ts, $(capture).test.tsx, $(capture).spec.ts, $(capture).spec.tsx,$(capture).d.ts",
+    "*.env": "$(capture).env.*",
+    "README.md": "README*,CHANGELOG*,LICENSE,CNAME",
+    "package.json": "pnpm-lock.yaml,pnpm-workspace.yaml,.gitattributes,.gitignore,.gitpod.yml,.npmrc,.browserslistrc,.node-version,.git*,.tazerc.json",
+    "eslint.config.mjs": ".eslintignore,.prettierignore,.stylelintignore,.commitlintrc.*,.prettierrc.*,stylelint.config.*,.lintstagedrc.mjs,cspell.json",
+    "tailwind.config.mjs": "postcss.*"
+  },
+```
