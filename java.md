@@ -46,7 +46,6 @@ public class user {
 ```
 
 mapper层针对数据库进行操作，主要实现增删改查等操作。于mybatis中方法一一映射。mapper接口中定义的方法，会自动被mybatis-plus实现。mybatis-plus有Service Interface，用于定义业务逻辑。Mapper Interface，用于定义数据库操作。
-
 ```java
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
@@ -58,7 +57,6 @@ public interface UserMapper extends BaseMapper<User> {
 service层给controller层的类提供接口,仅包含方法声明，不涉及具体实现逻辑.
 service文件夹的接口定义了业务逻辑的"做什么"，impl文件夹的实现类负责"怎么做"
 service层中还有一个impl层，impl文件夹主要用于存放接口的具体实现类，是代码分层设计里的重要组成部分。
-
 ```java
 @Service
 public class UserServiceImpl implements UserService {
@@ -74,7 +72,6 @@ public class UserServiceImpl implements UserService {
 ```
 
 controller是给前端提交接口
-
 ```java
 @RestController
 @RequestMapping("/user")
@@ -131,7 +128,6 @@ mybatis-config.xml中引入拦截器
 ```
 
 固定写法
-
 ```java
 @Intercepts({
     @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
@@ -237,7 +233,6 @@ LinkedHashMap<String, String> lhm = new LinkedHashMap<>();
 ### 数组
 
 java中数组是一种特殊的变量，它可以存储多个相同类型的变量。数组的定义和使用如下：
-
 ```java
 // 已知元素个数
 int[] arr = {1,2,3};
@@ -283,13 +278,12 @@ int[] arr = new int[5];
 3.override重写父类的方法,需要重写的方法名和参数列表与父类的方法名和参数列表相同
 
 ### 多态
-
 ```java
 Fu z = new Zi();
-这里的Fu就是多态形式，z只是一个变量，这里调用的是Fu类的方法
+// 这里的Fu就是多态形式，z只是一个变量，这里调用的是Fu类的方法
 Zi z = new Zi();
-这里的Zi就是多态形式，z只是一个变量，这里调用的是Zi类的方法
-多态可以实现不同的对象调用不同的方法
+// 这里的Zi就是多态形式，z只是一个变量，这里调用的是Zi类的方法
+// 多态可以实现不同的对象调用不同的方法
 ```
 
 1.为什么需要多态，多态能解决什么问题？
