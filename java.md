@@ -201,6 +201,39 @@ public class MyInterceptor implements Interceptor {
 
 ## java基础
 
+### 集合类
+
+Java 集合框架中还有List、 ‌Set‌、‌Map‌ 和 ‌Queue‌ 四大类常用接口
+1. Set 系列（无序、不可重复）
+```java
+HashSet‌,基于哈希表，无序，查询速度极快（O(1)）
+适用于需要‌去重‌或‌快速判断元素是否存在‌的场景
+Set<String> fruitSet = new HashSet<>();
+
+‌TreeSet,基于红黑树，元素会自动‌排序‌
+TreeSet<Integer> numSet = new TreeSet<>();
+numSet.add(5);
+numSet.add(1);
+numSet.add(3);
+System.out.println(numSet); // 输出 [1, 3, 5]，自动升序
+
+‌LinkedHashSet‌,保持元素的‌插入顺序
+LinkedHashSet<String> linkSet = new LinkedHashSet<>();
+```
+2.Map 系列（键值对 Key-Value）
+```java
+1.HashMap‌,最常用，无序，允许 Key 和 Value 为 null，性能高。
+Map<String, Integer> scoreMap = new HashMap<>();
+
+2.TreeMap‌,Key 会按照自然顺序或自定义规则‌排序‌
+TreeMap<String, String> treeMap = new TreeMap<>();
+
+3.LinkedHashMap‌,保持 Key 的‌插入顺序‌，常用于实现 LRU 缓存。
+LinkedHashMap<String, String> lhm = new LinkedHashMap<>();
+
+```
+3.Queue 系列（队列）
+
 ### 数组
 
 java中数组是一种特殊的变量，它可以存储多个相同类型的变量。数组的定义和使用如下：

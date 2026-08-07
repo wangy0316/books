@@ -1,18 +1,21 @@
 package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
-import com.example.demo.service.ISysService;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.example.demo.entity.Sys;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
-import java.util.List;
+import com.example.demo.entity.Sys;
+import com.example.demo.service.ISysService;
 
 @RestController
 @RequestMapping("/sys")
@@ -37,7 +40,9 @@ public class SysController {
   }
 
   @GetMapping("/list")
-  public Result<List<Sys>> getSysList() {
-    return Result.success(sysService.getSysList());
+  public Result<IPage<Sys>> getSysList(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+    // 分页查询
+    IPage<Sys> page = new Page<>(pageNum, pageSize);
+    return Result.success(sysService.getSysList(page));
   }
 }
