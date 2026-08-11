@@ -232,8 +232,8 @@ public class MyInterceptor implements Interceptor {
       @TableField(value = "create_time", fill = FieldFill.INSERT)：在插入时自动填充字段值
       @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")：在返回json数据时，格式化时间字段
 4. bean
-  ‌Bean‌ 是由 ‌Spring IoC 容器‌（控制反转容器）管理的一个对象。在传统的 Java 开发中，对象通常由开发者通过 new 关键字手动创建；而在 Spring Boot 中，对象的创建、初始化、销毁等生命周期全部交给 Spring 容器统一管理。这些被容器管理的对象就称为 ‌Bean‌。
-  使用@Autowired注解，自动注入依赖。
+  ‌Bean‌ 是由 ‌Spring IoC 容器‌（控制反转容器）管理的一个对象。在传统的 Java 开发中，对象通常由开发者通过 new 关键字手动创建；而在 Spring Boot 中，对象的创建、初始化、销毁等生命周期全部交给 Spring 容器统一管理。这些被容器管理的对象就称为 ‌Bean‌。类似前端的vuex，一个地方定义，后续在其他组件中使用定义都是同一个实例，保证了状态一致和共享
+  使用@Autowired注解，自动注入依赖。类似前端的vuex引入store和方法。
 5. maven项目
 6. Lombok框架
     1. Lombok是一个Java库，它消除了重复的代码，使开发人员能够更快速地编写代码。它通过注解的方式自 动为 Java 类生成常用的样板代码（Boilerplate Code），从而极大地简化了 Java 开发过程.
