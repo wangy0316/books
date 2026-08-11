@@ -2,8 +2,9 @@
 ### 快捷键
 
 1. shift + alt + o 导入类排序
-2. ctrl + t 查询接口方法
+2. ctrl + t 查询接口方法(必须启动项目)
 3. ctrl+shift+o 查看当前文件的大纲
+4. alt+方向键左右 历史前进后退
 
 ### 设计
 
@@ -28,7 +29,8 @@
 
 ### 层级结构
 
-domain层存放实体类，于数据库中的属性保持一致，存放属性和操作属性的get，set方法
+domain层，文件夹名称不固定（domain，entity‌，model‌），可能文件夹随便取，文件名叫XXXDO.java。文件中通常使用@Data等Lombok注解
+存放实体类，与数据库中的属性保持一致，存放属性和操作属性的get，set方法
 
 ```java
 public class user {
@@ -45,7 +47,8 @@ public class user {
 }
 ```
 
-mapper层针对数据库进行操作，主要实现增删改查等操作。于mybatis中方法一一映射。mapper接口中定义的方法，会自动被mybatis-plus实现。mybatis-plus有Service Interface，用于定义业务逻辑。Mapper Interface，用于定义数据库操作。
+mapper层，文件夹名称不固定（mapper，dao ），可能文件夹随便取，文件名叫XXXMapper.java  
+针对数据库进行操作，主要实现增删改查等操作。于mybatis中方法一一映射。mapper接口中定义的方法，会自动被mybatis-plus实现。mybatis-plus有Service Interface，用于定义业务逻辑。Mapper Interface，用于定义数据库操作。
 
 ```java
 @Mapper
@@ -55,7 +58,8 @@ public interface UserMapper extends BaseMapper<User> {
 }
 ```
 
-service层给controller层的类提供接口,仅包含方法声明，不涉及具体实现逻辑.
+service层  
+给controller层的类提供接口,仅包含方法声明，不涉及具体实现逻辑.
 service文件夹的接口定义了业务逻辑的"做什么"，impl文件夹的实现类负责"怎么做"
 service层中还有一个impl层，impl文件夹主要用于存放接口的具体实现类，是代码分层设计里的重要组成部分。
 
@@ -73,7 +77,7 @@ public class UserServiceImpl implements UserService {
 }
 ```
 
-controller是给前端提交接口
+controller是给前端提供接口的类，主要负责接收前端的请求，调用service层的方法，返回结果。  
 
 ```java
 @RestController
@@ -88,6 +92,49 @@ public class UserController {
       return userService.getAllUsers();
     }
 }
+
+// 如何查看后端接收的接口参数
+  /**
+   * 接收路径中的 ID
+   * URL: /api/user/1001
+   */
+  @GetMapping("/{id}")
+  public String getUserById(@PathVariable("id") Long userId) {
+      return "正在查询用户ID: " + userId;
+  }
+  /**
+   * 接收查询参数
+   * URL: /api/search/list?keyword=Java&page=1
+   */
+  @GetMapping("/list")
+  public String searchList(
+          @RequestParam(value = "keyword", required = true) String keyword,
+          @RequestParam(value = "page", defaultValue = "1") Integer page) {
+      
+      return "搜索关键词: " + keyword + ", 当前页: " + page;
+  }
+
+  // 接收 JSON 请求体参数
+
+  // 定义实体类UserDTO.java
+  @Data // Lombok 注解，自动生成 getter/setter
+  public class UserDTO {
+    private String name;
+    private Integer age;
+  }
+  
+  @PostMapping("/create")
+  public String createUser(@RequestBody UserDTO user) {
+    return "正在创建用户: " + user;
+  }
+
+  /**
+   * 如果不想定义实体类，也可以用 Map 接收 (不推荐复杂场景使用)
+   */
+  @PostMapping("/add/map")
+  public String addUserMap(@RequestBody Map<String, Object> params) {
+    return "收到参数: " + params.toString();
+  }
 ```
 
 ```java
