@@ -8,14 +8,14 @@
 
 ### 设计
 
-在java中，一个单独的java文件是无法通过java xxx.java运行的，需要先编译，再运行。通过javac xxx.java编译，生成一个xxx.class文件，这个class文件称为字节码文件，再通过java xxx运行。
-
+1. 在java中，一个单独的java文件是无法通过java xxx.java运行的，需要先编译，再运行。通过javac xxx.java编译，生成一个xxx.class文件，这个class文件称为字节码文件，再通过java xxx运行。
+2. 一个 Spring Boot 服务从命令到可访问，大致经历这些阶段：Maven 阶段、JVM 阶段、Spring 容器阶段、Web 服务器阶段、外部资源连接阶段、业务初始化阶段
 ### 基础概览
 
 1. SpringBootApplication标注在某个类，运行这个类的main方法来启动SpringBoot应用
 2. 配置文件放在 src/main/resources目录application.yml文件
 3. 实体类: 通常位于 entity 或 model 包下,User.java, System.java.用于存储数据库中的数据的类，通常对应数据库中的一个表。
-
+4. 后端项目则先找 Spring Boot 启动类。当前启动类是 FullstackMallApplication.java，它所在包名是 com.example.fullstackmall.service。Spring Boot 默认会从启动类所在包向下扫描组件，因此 Controller、Facade、Mapper、Config 等类如果放在这个包的子包下，就更容易被自动发现。你以后新增后端类时，也要有“包扫描范围”的意识，不要随便放到完全无关的包路径里。
 ### 配置类
 
 ```java
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 ```
 
 controller是给前端提供接口的类，主要负责接收前端的请求，调用service层的方法，返回结果。  
-
+关键字： @RestController、@GetMapping、@PostMapping、@PathVariable、@RequestBody
 ```java
 @RestController
 @RequestMapping("/user")
@@ -235,6 +235,7 @@ public class MyInterceptor implements Interceptor {
   ‌Bean‌ 是由 ‌Spring IoC 容器‌（控制反转容器）管理的一个对象。在传统的 Java 开发中，对象通常由开发者通过 new 关键字手动创建；而在 Spring Boot 中，对象的创建、初始化、销毁等生命周期全部交给 Spring 容器统一管理。这些被容器管理的对象就称为 ‌Bean‌。类似前端的vuex，一个地方定义，后续在其他组件中使用定义都是同一个实例，保证了状态一致和共享
   使用@Autowired注解，自动注入依赖。类似前端的vuex引入store和方法。
 5. maven项目
+  1. pom.xml可解读java版本，项目几个模块（modules）
 6. Lombok框架
     1. Lombok是一个Java库，它消除了重复的代码，使开发人员能够更快速地编写代码。它通过注解的方式自 动为 Java 类生成常用的样板代码（Boilerplate Code），从而极大地简化了 Java 开发过程.
     常用注解示例:
@@ -370,8 +371,40 @@ public class Outer {
 }
 ```
 
+### 后端概念
+1. BCrypt 校验密码的原理
+  BCrypt在校验时，会从存储的哈希值中提取出盐值（Salt）和工作因子（Cost Factor），然后用这些参数对用户输入的明文密码进行重新哈希，最后将新生成的哈希值与存储的哈希值进行比对
+  数据库中存储的BCrypt哈希值格式通常如下：
+  $2a$12$R9h/cIPz0gi.URNNX3kh2OPb9M3nS8J6pVZ7f1w6F5jKlx2yA4k6i
+  $2a$：算法版本
+  12：工作因子（2^12轮迭代）
+  R9h/cIPz0gi.URNNX3kh2O：盐值（22个字符）
+  Pb9M3nS8J6pVZ7f1w6F5jKlx2yA4k6i：实际哈希值
+  校验时，BCrypt会自动取出盐值部分，用相同的盐和工作因子对输入密码进行哈希，然后与后面的哈希值比较。
+2. 什么是 JWT
+  JWT 是一种紧凑的、自包含的网络令牌格式，用于在各方之间安全地传输信息。因为它本身是 JSON 格式的数据，经过签名后可以保证内容未被篡改。
+  简单来说，JWT 就是一个加密签名的 JSON 字符串，常用于身份认证和信息交换。
+  JWT 通常由 3 段组成：Header（头部）、Payload（载荷）、Signature（签名），中间用点号连接。
+  Payload 默认是 Base64Url 编码，不是加密！任何人都可以解码查看内容，所以绝对不要存放敏感信息（如密码、信用卡号）。
+  当前项目即使 JWT 还没过期，也会在 Filter 里重新查数据库用户，并检查 status == 1。这意味着管理员停用某个账号后，这个账号即使手里还有未过期 token，也会被拒绝访问。这是比“完全相信 JWT 内容”更稳妥的设计。
 ### 问题
 
 1. 使用构造方法初始化对象和使用get、set方法初始化对象的区别
 2. 多态中，什么是变量调用编译看左边，运行看左边。方法调用编译看左边，运行看右边。
 3. 什么时候用匿名类，匿名类有什么作用？匿名类和lambda表达式有什么区别？
+4. 什么是事务和状态机
+
+### 写法
+1. 使用@Resource还是@Autowried？
+    1. 处于纯 Spring/Spring Boot 生态中，且团队没有特殊规定，则使用@Autowired.如果你希望代码‌减少对 Spring 特定注解的依赖或者你更习惯‌按名称（By Name）‌进行精确注入则使用@Resource。但是Spring 4.3+ 开始推荐final 写法
+    ```java
+      @Service
+      public class OrderService {
+          private final PaymentService paymentService;
+
+          // 推荐：构造函数注入，无需注解（Spring 4.3+ 自动识别单构造函数）
+          public OrderService(PaymentService paymentService) {
+              this.paymentService = paymentService;
+          }
+      }
+    ```
