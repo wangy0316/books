@@ -169,6 +169,25 @@ template 中的HTML 最终也是使用渲染函数生成对应的VNode函数。
 
 // Vue 3中不再推荐使用.sync，转而用带参数的v-model
 <child v-model:name="userName" v-model:age="userAge" />
+// child文件中，定义props
+const props = defineProps({
+  name: {
+    type: String,
+    default: ''
+  },
+  age: {
+    type: Number,
+    default: 0
+  }
+})
+emit('update:name', 'zhangsan')
+emit('update:age', 18)
+// 如果不使用v-model，需要手动监听更新
+<child 
+  :name="userName" 
+  @update:name="userName = $event" 
+/>
+// @update:name是Vue 3 约定的‌更新事件名称‌，当子组件内部执行 emit('update:name', 'zhangsan') 时，会触发事件，$event‌ 是 Vue 模板中的特殊变量，代表子组件在触发事件时传递的‌第一个参数，对应'zhangsan'
 
 // shallowReactive它只会监听对象的顶层属性变化,比reactive更节约性能。
 const data = shallowReactive({

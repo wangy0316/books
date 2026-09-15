@@ -144,3 +144,13 @@ spanMethod({row, column, rowIndex, columnIndex}{
    }
 }
 ```
+关于el-scrollbar，滚动条不展示的问题
+```html
+<div class="el-scrollbar__wrap el-scrollbar__wrap--hidden-default">
+  <div class="el-scrollbar__view" style="">
+    ...
+  </div>
+</div>
+
+// el-scrollbar的层级架构为这样的，el-scrollbar__view的高度比el-scrollbar__wrap的高度高，就会展示滚动条。
+```
