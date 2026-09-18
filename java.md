@@ -1,24 +1,26 @@
-### 快捷键
+
+# 快捷键
 
 1. shift + alt + o 导入类排序
 2. ctrl + t 查询接口方法(必须启动项目)
 3. ctrl+shift+o 查看当前文件的大纲
 4. alt+方向键左右 历史前进后退
 5. ctrl + f12 查看方法定义
+6. 在service中的方法，选中后鼠标右键“转到实现”可进入impl中的方法
 
-### 设计
+# 设计
 
 1. 在java中，一个单独的java文件是无法通过java xxx.java运行的，需要先编译，再运行。通过javac xxx.java编译，生成一个xxx.class文件，这个class文件称为字节码文件，再通过java xxx运行。
 2. 一个 Spring Boot 服务从命令到可访问，大致经历这些阶段：Maven 阶段、JVM 阶段、Spring 容器阶段、Web 服务器阶段、外部资源连接阶段、业务初始化阶段
 
-### 基础概览
+# 基础概览
 
 1. SpringBootApplication标注在某个类，运行这个类的main方法来启动SpringBoot应用
 2. 配置文件放在 src/main/resources目录application.yml文件
 3. 实体类: 通常位于 entity 或 model 包下,User.java, System.java.用于存储数据库中的数据的类，通常对应数据库中的一个表。
 4. 后端项目则先找 Spring Boot 启动类。当前启动类是 FullstackMallApplication.java，它所在包名是 com.example.fullstackmall.service。Spring Boot 默认会从启动类所在包向下扫描组件，因此 Controller、Facade、Mapper、Config 等类如果放在这个包的子包下，就更容易被自动发现。你以后新增后端类时，也要有“包扫描范围”的意识，不要随便放到完全无关的包路径里。
 
-### 配置类
+## 配置类
 
 ```java
 @Configuration: 用于标识一个类为配置类，该类主要用于定义和组织 Spring 应用程序的配置信息
@@ -27,9 +29,9 @@
 @Component：通用组件注解.用于标识组件的注解，核心作用都是让Spring容器扫描到被标注的类
 ```
 
-## springboot
+# springbo
 
-### 层级结构
+## 文件层级结构
 
 主流模式
 cn.dip.platform
@@ -80,7 +82,9 @@ cn.dip.platform
 
 结构简单，新手容易理解。
 
-#### domain
+## ‌四层架构
+
+### domain
 
 domain层，文件夹名称不固定（domain，entity‌，model‌），可能文件夹随便取，文件名叫XXXDO.java。文件中通常使用@Data等Lombok注解
 存放实体类，与数据库中的属性保持一致，存放属性和操作属性的get，set方法
@@ -125,7 +129,7 @@ public interface UserMapper extends BaseMapper<User> {
 </select>
 ```
 
-#### service层
+### service层
 
 给controller层的类提供接口,仅包含方法声明，不涉及具体实现逻辑.
 service文件夹的接口定义了业务逻辑的"做什么"，impl文件夹的实现类负责"怎么做"
@@ -145,7 +149,7 @@ public class UserServiceImpl implements UserService {
 }
 ```
 
-#### controller层
+### controller层
 
 给前端提供接口的类，主要负责接收前端的请求，调用service层的方法，返回结果。\
 关键字： @RestController、@GetMapping、@PostMapping、@PathVariable、@RequestBody
@@ -233,7 +237,7 @@ public class UserController {
 }
 ```
 
-### Mybatis拦截器
+## Mybatis拦截器
 
 mybatis-config.xml中引入拦截器
 
@@ -283,7 +287,7 @@ public class MyInterceptor implements Interceptor {
 }
 ```
 
-### 概念
+## 概念
 
 1. spring mvc框架
    1. Spring 3.1及以后版本中，推荐使用Java配置而非XML配置。springMvc注解，主要用于‌控制请求映射‌、‌绑定请求参数‌以及‌处理响应数据‌，是开发 Java Web 应用时的核心工具。常用的核心注解包括 ‌@Controller‌、‌@RestController‌、‌@RequestMapping‌、‌@RequestParam‌、‌@PathVariable‌ 和 ‌@ResponseBody‌ 等。
@@ -307,19 +311,29 @@ public class MyInterceptor implements Interceptor {
    使用@Autowired注解，自动注入依赖。类似前端的vuex引入store和方法。
 5. maven项目
 6. pom.xml可解读java版本，项目几个模块（modules）
-7. Lombok框架
-   1. Lombok是一个Java库，它消除了重复的代码，使开发人员能够更快速地编写代码。它通过注解的方式自 动为 Java 类生成常用的样板代码（Boilerplate Code），从而极大地简化了 Java 开发过程.
-      常用注解示例:
-      @Data‌：最常用的注解，等同于同时使用 @Getter、@Setter、@RequiredArgsConstructor、@ToString 和 @EqualsAndHashCode。适用于大多数数据载体类（如 Entity、DTO）。
-      ‌@Getter / @Setter‌：仅为指定字段生成 getter 或 setter 方法。
-      ‌@NoArgsConstructor / @AllArgsConstructor‌：生成无参构造器或全参构造器。
-      ‌@Builder‌：提供构建者模式（Builder Pattern）的支持，方便链式调用创建对象，特别适用于字段较多的类。
-      ‌@Slf4j‌：自动生成一个名为 log 的 SLF4J 日志对象，方便直接在类中进行日志记录。
-      ‌@NonNull‌：在方法参数或字段上使用，自动生成空值检查代码，若传入 null 则抛出
+7. Lombok 框架
+   Lombok是一个Java库，它消除了重复的代码，使开发人员能够更快速地编写代码。它通过注解的方式自 动为 Java 类生成常用的样板代码（Boilerplate Code），从而极大地简化了 Java 开发过程  
+   常用注解示例:
+    1. @Data‌：最常用的注解，等同于同时使用 @Getter、@Setter、@RequiredArgsConstructor、@ToString 和。
+    | 组成部分 | 作用 |
+    | --- | --- |
+    | @Getter | 所有字段自动生成 getter 方法 |
+    | @Setter | 所有非 final 字段自动生成 setter 方法 |
+    | @ToString | 自动生成 toString 方法，打印所有字段值 |
+    | @EqualsAndHashCode | 自动生成 equals 和 hashCode 方法 |
+    | @RequiredArgsConstructor | 自动生成包含「final 字段 + @NonNull 字段」的构造方法 |
+      
+   2. @EqualsAndHashCode。适用于大多数数据载体类（如 Entity、DTO）。
+   ‌3. @Getter / @Setter‌：仅为指定字段生成 getter 或 setter 方法。
+   ‌4. @NoArgsConstructor / @AllArgsConstructor‌：生成无参构造器或全参构造器。
+   5. @Builder‌：提供构建者模式（Builder Pattern）的支持，方便链式调用创建对象，特别适用于字段较多的类。
+   ‌6. @Slf4j‌：自动生成一个名为 log 的 SLF4J 日志对象，方便直接在类中进行日志记录。
+   ‌7. @NonNull‌：在方法参数或字段上使用，自动生成空值检查代码，若传入 null 则抛出
+   8. @Accessors(chain = true) // 🔑 开启链式调用
 
-## java基础
+# java基础
 
-### 设计
+## 设计
 
 1. Service 只写接口，逻辑写在 Impl 里，是 Java 面向对象设计的核心机制。
 
@@ -348,14 +362,17 @@ public class MyInterceptor implements Interceptor {
 ```
 
 那么service中的方法名和impl中的方法实际逻辑是如何绑定的？
-Spring 容器启动时扫描所有 @Service / @Component 类，将扫描到的类，准备注册成一个 Bean
-把 Bean 注册进容器，key 是"类型", 注册时用的 key 不是一个字符串名，而是一个类型信息
+编译期通过 implements 导致的绑定
 
-1. Class\<? extends DataSourceAdapter> clazz = adapterClasses.get(type)
+2. Class\<? extends DataSourceAdapter> clazz = adapterClasses.get(type)
    1. 反射实例化：根据运行时的信息动态决定 new 哪个类
    2. 反射是如何拿到实例和加载对应的实现方法？反射后就拿到了对应的实例，然后就可以调用实例的方法
+3. SPI（Service Provider Interface，服务提供者接口）是 Java 内置的一套"插件发现机制"：接口方只定义规范，实现方把实现类写在一个约定好的文件里，运行时由 JVM 自动发现并加载。
 
-### 集合类
+你的项目里，适配器框架就是靠 SPI 把十几个 adapter-xxx 模块"插"进来的。
+
+
+## 集合类
 
 Java 集合框架中还有List、 ‌Set‌、‌Map‌ 和 ‌Queue‌ 四大类常用接口
 
@@ -392,7 +409,7 @@ LinkedHashMap<String, String> lhm = new LinkedHashMap<>();
 
 1. Queue 系列（队列）
 
-### 数组
+## 数组
 
 java中数组是一种特殊的变量，它可以存储多个相同类型的变量。数组的定义和使用如下：
 
@@ -411,7 +428,7 @@ int[] arr = new int[0];
 int[] arr = new int[5];
 ```
 
-### 构造方法
+## 构造方法
 
 1. 方法名与类名相同，大小写一致
 2. 没有返回值
@@ -421,12 +438,12 @@ int[] arr = new int[5];
 6. 无参构造方法
 7. 构造方法可以调用其他构造方法
 
-#### 构造方法调用
+## 构造方法调用
 
 1. 每次new一个对象，就会调用一个构造方法，不需要手动调用
 2. 构造方法可以调用其他构造方法
 
-### 静态方法
+## 静态方法
 
 1. 方法名前加static关键字
 2. 静态方法只能调用静态方法和静态变量，不能调用非静态变量、方法。
@@ -434,13 +451,13 @@ int[] arr = new int[5];
 4. 静态方法没有this关键字
    静态随着类的加载而加载（加载静态的时候可能都没有非静态变量和方法），非静态随着对象的创建而加载
 
-### 继承
+## 继承
 
 1. 输入本类的变量使用this.变量名
 2. 输入父类的变量使用super.变量名
 3. override重写父类的方法,需要重写的方法名和参数列表与父类的方法名和参数列表相同
 
-### 多态
+## 多态
 
 ```java
 Fu z = new Zi();
@@ -453,13 +470,13 @@ Zi z = new Zi();
 1. 为什么需要多态，多态能解决什么问题？
 2. 什么是类型转换，类型转换解决了什么问题？
 
-### 接口(implements)
+## 接口(implements)
 
 1. 接口就是一个规则，独立于继承体系之外
 2. 接口是一种特殊的类，它没有方法体，只有方法的声明
 3. 接口可以实现多态，因为接口是一个抽象类，所以可以被实现类实现
 
-### 内部类
+## 内部类
 
 1. 有几种内部类
 
@@ -478,8 +495,142 @@ public class Outer {
   }
 }
 ```
+## enum的定义和使用
 
-### 后端概念
+```java
+
+public enum TaskStatus {
+  DRAFT("DRAFT", "草稿"),
+  DISABLE(0, "禁用");
+
+  /**
+   * 状态码（存数据库用）
+   */
+  private final Integer code;
+
+  /**
+   * 描述（前端展示用）
+   */
+  private final String desc;
+
+  // 一般每个枚举类里都会加几个静态工具方法，方便根据 code 找枚举、判断是否存在等
+
+  // 获取code
+  public String getCode() {
+    return code;
+  }
+
+  /**
+   * 判断 code 是否存在
+   */
+  public static boolean isValid(Integer code) {
+    return getByCode(code) != null;
+  }
+
+}
+
+// 使用的时候
+
+// 获取code
+DataSourceStatusEnum.DRAFT.getCode()
+
+// 使用Lombok帮你自动生成 getter 方法和全参构造方法‌，不用手写一堆样板代码
+
+// 普通方式
+public enum DataSourceStatusEnum {
+    ENABLE(1, "启用"),
+    DISABLE(0, "禁用");
+
+    private final Integer code;
+    private final String desc;
+
+    // 👇 这些 getter 全是手写的样板代码，又长又无聊
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    DataSourceStatusEnum(Integer code, String desc) {
+        this.code = code;
+        this.desc = desc;
+    }
+}
+
+// Lombok
+import lombok.Getter;
+import lombok.AllArgsConstructor;
+
+@Getter // 🔑 就加这一行，上面那一堆 getter 自动生成
+@AllArgsConstructor // 🔑 自动生成全参构造
+public enum DataSourceStatusEnum {
+  ENABLE(1, "启用"),
+  DISABLE(0, "禁用");
+
+  private final Integer code;
+  private final String desc;
+}
+
+```
+## Map
+
+```java
+// 典型的定义方式：适配器类型 -> 采集类型 的映射表
+private static final Map<String, Integer> ADAPTER_TO_COLLECTOR = new HashMap<>();
+// 或者
+private static final Map<DataSourceTypeEnum, Integer> ADAPTER_TO_COLLECTOR = new ConcurrentHashMap<>();
+// Map 的标准方法，往映射表里加一条键值对
+ADAPTER_TO_COLLECTOR.put(key, value)
+
+// 根据适配器类型快速判断采集类型
+Integer collectionType = ADAPTER_TO_COLLECTOR.get(adapterType);
+
+```
+## Stream
+Stream Java 8 引入的「数据处理管道」‌，它不是集合、不存数据，而是一套‌专门用来处理集合/数组数据的「流水线操作工具」‌——你告诉它要对数据做什么（过滤、转换、排序、分组……），它帮你把循环、判断这些底层细节都做了。本质是 Java 提供的一种‌「声明式数据处理工具」‌——用它写出来的代码更简洁、更易读、更接近「我想要什么」，而不是「我要怎么做」。
+简单说：‌for 循环是「命令式」，Stream 是「声明式」‌。
+
+* for 循环：一步步告诉机器怎么干（怎么循环、怎么判断、怎么装集合）
+* Stream：直接说我要什么结果（过滤、转换、分组），具体怎么循环交给 JDK
+
+传统for循环
+```java
+List list = dataSourceService.list();
+
+// 1. 先建一个结果集合
+List result = new ArrayList<>();
+for (DataSourceDO ds : list) {
+  // 3. 判断是不是 MySQL
+  if ("mysql".equals(ds.getType())) {
+    ...
+  }
+}
+```
+
+Stream（声明式）
+
+```java
+// 将list转为stream
+List result = list.stream()
+    .filter(ds -> "mysql".equals(ds.getType()))   // 只要 MySQL
+
+// 将集合转
+```
+
+## for循环
+```java
+  // Java 枚举的 values() 返回的是"所有枚举常量的数组, 提供数据源
+  for (TaskStatus status : values()) {
+    if (status.code.equals(code)) {
+      return status;
+    }
+  }
+  // TaskStatus的数据源，然后获取数据源的code
+```
+
+# 后端概念
 
 1. BCrypt 校验密码的原理
    BCrypt在校验时，会从存储的哈希值中提取出盐值（Salt）和工作因子（Cost Factor），然后用这些参数对用户输入的明文密码进行重新哈希，最后将新生成的哈希值与存储的哈希值进行比对
@@ -497,14 +648,7 @@ public class Outer {
    Payload 默认是 Base64Url 编码，不是加密！任何人都可以解码查看内容，所以绝对不要存放敏感信息（如密码、信用卡号）。
    当前项目即使 JWT 还没过期，也会在 Filter 里重新查数据库用户，并检查 status == 1。这意味着管理员停用某个账号后，这个账号即使手里还有未过期 token，也会被拒绝访问。这是比“完全相信 JWT 内容”更稳妥的设计。
 
-### 问题
-
-1. 使用构造方法初始化对象和使用get、set方法初始化对象的区别
-2. 多态中，什么是变量调用编译看左边，运行看左边。方法调用编译看左边，运行看右边。
-3. 什么时候用匿名类，匿名类有什么作用？匿名类和lambda表达式有什么区别？
-4. 什么是事务和状态机
-
-### 开发中注意事项
+# 开发中注意事项
 
 1. java不同于js，有类和实例的概念，本着单一原则，创建的实例需要缓存起来，每次直接去缓存中读取创建的实例，而不是每次去new
 2. 反射实例化: 平时我们 new 对象是"写死在代码里的"，反射实例化是"根据运行时的信息动态决定 new 哪个类"
@@ -548,7 +692,7 @@ public DataSourceAdapter getAdapter(String type) {
 后端响应:  Java 对象转成 JSON 返回
 最常用的两个类: ObjectMapper(主入口，JSON 与对象互转), TypeReference(携带泛型信息，解决类型擦除)
 
-### 写法
+# 代码写法
 
 1. 使用@Resource还是@Autowried？
    1. 处于纯 Spring/Spring Boot 生态中，且团队没有特殊规定，则使用@Autowired.如果你希望代码‌减少对 Spring 特定注解的依赖或者你更习惯‌按名称（By Name）‌进行精确注入则使用@Resource。但是Spring 4.3+ 开始推荐final 写法
@@ -564,7 +708,43 @@ public DataSourceAdapter getAdapter(String type) {
      }
    ```
 2. Class\<? extends DataSourceAdapter> clazz = adapterClasses.get(type);
-   1. 反射实例化
+  上面的写法是反射实例化
+3. private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); 
+```java
+// 创建 Jackson 的 ObjectMapper 实例，并关闭"遇到未知字段就报错"的严格模式,这是 Spring Boot / Jackson 项目里最常见的配置之一
+public class User {
+    private String name;
+    private Integer age;
+    // getter/setter
+}
+{
+  "name": "张三",
+  "age": 25,
+  "email": "zhangsan@example.com"   // ← User 类里没有 email 字段
+}
+
+ObjectMapper mapper = new ObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+User user = mapper.readValue(json, User.class);
+// ✅ 不报错，email 被忽略，user.name = "张三"，user.age = 25
+```
+4. collectors.stream().map(DataCollector::getType).toList() 中DataCollector::getType 。Lambda 表达式的简写形式，等价于c -> c.getType()。调用c元素的getType()方法.
+  ```java
+    // 整段代码等价于
+    List<String> result = new ArrayList<>();
+    for (DataCollector collector : collectors) {
+        String type = collector.getType();   // 对每个对象调用 getType()
+        result.add(type);                     // 把返回值加入 list
+    }
+  ```
+5. .toList() 方法将流转换为列表。
+   ```java
+    List<String> types = collectors.stream()
+        .map(DataCollector::getType)
+        .toList();
+   ```
+6. 
 
 # Service + Impl vs 适配器：关键对比表
 
