@@ -744,7 +744,53 @@ User user = mapper.readValue(json, User.class);
         .map(DataCollector::getType)
         .toList();
    ```
-6. 
+6. 构造只带 id + taskContent 的更新对象
+   ```java
+    @PostMapping("/saveTaskContent")
+    @Operation(summary = "保存任务编排结果")
+    public Result<Boolean> saveTaskContent(@Valid @RequestBody EtlTaskEditDto param) {
+      // 只更新任务内容字段，避免覆盖其它字段
+      EtlTaskEntity update = new EtlTaskEntity(); // 手动new一个空对象
+      update.setId(param.getId());
+      update.setTaskContent(param.getTaskContent());
+      return Result.success(taskService.update(update));
+    }
+   ```
+   setTaskContent只更改taskContent字段
+
+7. StringUtils.hasText()，它同时判断 null、空串、纯空白，更严谨的判断
+8. 幂等接口的设计，即多次调用相同参数，结果相同
+9. OBJECT_MAPPER.convertValue() 方法可以将一个对象转换为另一个对象，而不需要手动设置每个字段。
+  ```java
+    // convertValue 是 Jackson ObjectMapper 的一个普通方法
+    import com.fasterxml.jackson.databind.ObjectMapper;
+    // DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES 是 Jackson 的一个反序列化开关，控制“JSON 里出现了 Java 类没有的字段时，要不要报错”。
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    
+    User user = OBJECT_MAPPER.convertValue(json, User.class);
+    // 推荐使用private static final而不是private ObjectMapper mapper = new ObjectMapper()
+    // 更推荐定义一个全局 ObjectMapper Bean，所有类注入使用
+
+    @Configuration
+    public class JacksonConfig {
+
+        @Bean
+        public ObjectMapper objectMapper() {
+            return JsonMapper.builder()
+                    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                    .build();
+        }
+    }
+
+    // 业务代码
+    @Component
+    public class ElasticsearchOutputSink implements OutputSink {
+
+        @Autowired
+        private ObjectMapper objectMapper; // 全局同一个
+    }
+  ```
+
 
 # Service + Impl vs 适配器：关键对比表
 
