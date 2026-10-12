@@ -29,7 +29,40 @@
 @Component：通用组件注解.用于标识组件的注解，核心作用都是让Spring容器扫描到被标注的类
 ```
 
-# springbo
+# spring核心
+1. IoC 和 DI
+IoC（控制反转）：对象的创建和依赖管理交给 Spring 容器。
+DI（依赖注入）：容器把依赖注入到对象里。
+注入方式：构造器注入（推荐）、setter 注入、字段注入（@Autowired）。
+
+2. Bean 生命周期
+实例化 → 属性注入 → 初始化（@PostConstruct）→ 使用 → 销毁（@PreDestroy）。
+
+3. Bean 作用域
+   
+  | 作用域 | 说明 |
+  | -- | -- |
+  | singleton |	默认，容器里只有一个实例 |
+  | prototype |	每次获取都创建新实例 |
+  | request	| 每个 HTTP 请求一个 |
+  | session	| 每个会话一个 |
+
+4. 常用注解
+    | 注解 |	作用 |
+    |--|--|
+    |@Component	|通用组件 |
+    |@Service	| 业务层|
+    |@Repository	|数据访问层|
+    |@Controller / @RestController |	控制层 |
+    |@Configuration	|配置类|
+    |@Bean	声明 | Bean |
+    |@Autowired	| 注入|
+    |@Value	|注入配置值 |
+    |@ConfigurationProperties	| 批量绑定配置 |
+1. 
+# 
+
+
 
 ## 文件层级结构
 
@@ -331,6 +364,42 @@ public class MyInterceptor implements Interceptor {
    ‌7. @NonNull‌：在方法参数或字段上使用，自动生成空值检查代码，若传入 null 则抛出
    8. @Accessors(chain = true) // 🔑 开启链式调用
 
+
+# MyBatis-Plus基础概览
+1. MyBatis-Plus 条件构造器（Wrapper）是一个用 Java 代码来拼 SQL 查询条件的工具。你不用手写 WHERE、AND、OR、LIKE 这些 SQL 片段，而是调用它的方法，它帮你生成对应的 SQL。
+```java
+// java写法
+@Select("SELECT * FROM dip_system_datasource WHERE adapter_type = #{type}")
+List<DataSourceDO> selectByType(String type);
+
+// 条件构造器
+dataSourceMapper.selectList(
+  new LambdaQueryWrapper<DataSourceDO>()
+    .eq(DataSourceDO::getAdapterType, "minio")
+);
+```
+在什么场景用
+单表查询：用 LambdaQueryWrapper 最方便。
+多表联查：条件构造器不擅长，还是写 XML 或 @Select。
+复杂 SQL：比如子查询、窗口函数，建议手写 SQL。
+简单更新：LambdaUpdateWrapper 可以只更新指定字段。
+
+# Java 8+ 新特性
+
+1. Lambda 表达式
+   list.forEach(x -> System.out.println(x));
+2. 方法引用
+   DataSourceDO::getHost   // 等价于 ds -> ds.getHost()
+3. Stream API
+    list.stream()
+    .filter(x -> x > 0)
+    .map(String::valueOf)
+    .collect(Collectors.toList());
+  中间操作：filter、map、sorted、distinct
+  终端操作：collect、forEach、count、reduce
+  惰性求值：没有终端操作，中间操作不会执行
+
+
 # java基础
 
 ## 设计
@@ -589,8 +658,8 @@ Integer collectionType = ADAPTER_TO_COLLECTOR.get(adapterType);
 
 ```
 ## Stream
-Stream Java 8 引入的「数据处理管道」‌，它不是集合、不存数据，而是一套‌专门用来处理集合/数组数据的「流水线操作工具」‌——你告诉它要对数据做什么（过滤、转换、排序、分组……），它帮你把循环、判断这些底层细节都做了。本质是 Java 提供的一种‌「声明式数据处理工具」‌——用它写出来的代码更简洁、更易读、更接近「我想要什么」，而不是「我要怎么做」。
-简单说：‌for 循环是「命令式」，Stream 是「声明式」‌。
+Stream是**Java 8** 引入的「数据处理管道」‌，它不是集合、不存数据，而是一套‌专门用来处理集合/数组数据的「流水线操作工具」‌——你告诉它要对数据做什么（过滤、转换、排序、分组……），它帮你把循环、判断这些底层细节都做了。本质是 Java 提供的一种‌「声明式数据处理工具」‌——用它写出来的代码更简洁、更易读、更接近「我想要什么」，而不是「我要怎么做」。
+简单说：‌for 循环是「**命令式**」，Stream 是「**声明式**」‌。
 
 * for 循环：一步步告诉机器怎么干（怎么循环、怎么判断、怎么装集合）
 * Stream：直接说我要什么结果（过滤、转换、分组），具体怎么循环交给 JDK
@@ -685,13 +754,22 @@ public DataSourceAdapter getAdapter(String type) {
   Object instance = constructor.newInstance();
 ```
 
-1. Jackson 是 Java 生态里最主流的 JSON 处理库，负责在 Java 对象和 JSON 字符串之间来回转换。
+3. Jackson 是 Java 生态里最主流的 JSON 处理库，负责在 Java 对象和 JSON 字符串之间来回转换。
 
 前端发送:  {"name": "张三", "age": 25}
 后端接收:  转成 Java 对象 User(name="张三", age=25)
 后端响应:  Java 对象转成 JSON 返回
 最常用的两个类: ObjectMapper(主入口，JSON 与对象互转), TypeReference(携带泛型信息，解决类型擦除)
 
+4. selectList 本身不保证任何顺序。SQL 标准里，没有 ORDER BY 的查询，返回顺序由数据库实现决定，可能受执行计划、索引、并发、分片、副本等因素影响，每次都可能不一样。要保证每次返回顺序一致，必须显式指定 ORDER BY，并且排序字段最好能唯一确定一行。
+```text
+为什么默认顺序不稳定
+没有 ORDER BY：数据库可以按任何顺序返回，比如按存储顺序、索引顺序、并行扫描顺序。
+分布式数据库（如 Doris）：数据分散在多个 BE、多个分片，合并结果的顺序更不固定。
+并发和缓存：不同时间执行，执行计划可能不同，顺序也可能变。
+索引变化：加索引、删索引、统计信息更新，都可能改变返回顺序。
+所以，不要依赖“看起来稳定”的顺序，比如“平时都是按 id 返回的”，这不可靠。
+```
 # 代码写法
 
 1. 使用@Resource还是@Autowried？
@@ -790,7 +868,70 @@ User user = mapper.readValue(json, User.class);
         private ObjectMapper objectMapper; // 全局同一个
     }
   ```
+9. Java Bean 属性访问写法
+    ```java
+      // properties.getDatasourceId() 是典型的 Java Bean 属性访问写法，在 Spring Boot 里通常用来读取配置文件中绑定的配置项。
+      @Data
+      @ConfigurationProperties(prefix = "dip.lakehouse.attachment")
+      public class AttachmentProperties {
+          private String datasourceId;   // 对应配置项 datasource-id
+      }
+      // Lombok 的 @Data 会自动生成 getDatasourceId() 和 setDatasourceId()。
+    ```
+    在application.yml中配置datasource-id
+    ```yml
+      dip:
+        lakehouse:
+          attachment:
+            datasource-id: minio-107
+    ```
+    Spring 启动时自动绑定,Spring 会读取 dip.lakehouse.attachment.datasource-id，调用 setDatasourceId("minio-107") 把值塞进对象。
+10. 查询数据库
+    ```java
+      dataSourceMapper.selectList(
+        new LambdaQueryWrapper<DataSourceDO>()
+            .eq(DataSourceDO::getAdapterType, 'minio'));
+    // 等价于
+    SELECT * FROM dip_system_datasource WHERE adapter_type = 'minio';
+    ```
+    dataSourceMapper：MyBatis-Plus 的 Mapper，操作 DataSourceDO 对应的表
+    selectList(...)：查列表
+    LambdaQueryWrapper：用 lambda 方法引用来写条件，避免手写字段名。
+11. a::b写法
+    | 写法 | 含义 | 等价lambda |
+    |--|--|--|
+    | 类名::静态方法	| 引用静态方法 |	Math::abs → x -> Math.abs(x)|
+    | 类名::实例方法	| 引用实例方法，第一个参数作为调用者 |	DataSourceDO::getAdapterType → ds -> ds.getAdapterType() |
+    | 对象::实例方法	| 引用某个具体对象的方法 |	System.out::println → x -> System.out.println(x) |
+    | 类名::new	| 引用构造器 |	ArrayList::new → () -> new ArrayList<>()|
+    
+    
+  什么是类名？
+  类名就是你在代码里给“类”起的名字，
+  ```java
+    public class DataSourceDO {
+      private String host;
+      private Integer port;
 
+      public String getHost() {
+          return host;
+      }
+    }
+  ```
+  这里的 DataSourceDO 就是类名。
+  类名的作用：
+  用来声明变量类型：DataSourceDO ds;
+  用来创建对象：new DataSourceDO()
+  用来调用静态方法/静态字段：DataSourceDO.staticMethod()
+  用来做方法引用：DataSourceDO::getHost
+  **类名代表的是“类”本身，不是具体的某个数据。**
+
+  什么是对象？
+  对象是根据类创建出来的具体实例。类只是模板，对象才是真正有数据、占内存的实体。平常口语中的**实例**说的就是对象。
+  DataSourceDO ds = new DataSourceDO();
+  new DataSourceDO()：根据 DataSourceDO 这个类，创建一个对象。
+  ds：是一个引用变量，指向这个对象。
+  这个对象有自己独立的 host、port 等字段值。
 
 # Service + Impl vs 适配器：关键对比表
 
