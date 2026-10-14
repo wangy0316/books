@@ -20,13 +20,17 @@
 3. 实体类: 通常位于 entity 或 model 包下,User.java, System.java.用于存储数据库中的数据的类，通常对应数据库中的一个表。
 4. 后端项目则先找 Spring Boot 启动类。当前启动类是 FullstackMallApplication.java，它所在包名是 com.example.fullstackmall.service。Spring Boot 默认会从启动类所在包向下扫描组件，因此 Controller、Facade、Mapper、Config 等类如果放在这个包的子包下，就更容易被自动发现。你以后新增后端类时，也要有“包扫描范围”的意识，不要随便放到完全无关的包路径里。
 
-## 配置类
-
+## 配置类（注解）
+注解功能上都是"把类交给 Spring 管"，区别只是语义标签——就像前端把文件放进 services/、components/、api/ 一样，是为了让人一眼知道职责。
 ```java
 @Configuration: 用于标识一个类为配置类，该类主要用于定义和组织 Spring 应用程序的配置信息
 @Override :关键且常用的‌标记型注解（Marker Annotation）‌。它的主要作用是显式地声明某个方法旨在‌重写（Override）‌父类或接口中的方法
 @Service：业务层组件注解.用于标识组件的注解，核心作用都是让Spring容器扫描到被标注的类
 @Component：通用组件注解.用于标识组件的注解，核心作用都是让Spring容器扫描到被标注的类
+@Repository：
+@Controller：
+@RestController：
+@Bean
 ```
 
 # spring核心
@@ -59,9 +63,6 @@ DI（依赖注入）：容器把依赖注入到对象里。
     |@Autowired	| 注入|
     |@Value	|注入配置值 |
     |@ConfigurationProperties	| 批量绑定配置 |
-1. 
-# 
-
 
 
 ## 文件层级结构
@@ -116,7 +117,22 @@ cn.dip.platform
 结构简单，新手容易理解。
 
 ## ‌四层架构
-
+┌────────────────────────────────────────┐
+│  Controller（控制层）                    │  ← Vue Router / API 路由
+│  ├─ 接收请求、参数校验                    │
+│  └─ 调用 Service                         │
+├────────────────────────────────────────┤
+│  Service（业务层）                        │  ← services/ 业务逻辑
+│  ├─ 业务规则、编排                        │
+│  └─ 调用 Repository                      │
+├────────────────────────────────────────┤
+│  Repository / Mapper（数据访问层）         │  ← api/ 请求封装
+│  ├─ 拼 SQL / ORM                         │
+│  └─ 访问数据库                            │
+├────────────────────────────────────────┤
+│  Entity / DO / DTO（数据模型）             │  ← TypeScript interface
+│  └─ 定义数据结构                          │
+└────────────────────────────────────────┘
 ### domain
 
 domain层，文件夹名称不固定（domain，entity‌，model‌），可能文件夹随便取，文件名叫XXXDO.java。文件中通常使用@Data等Lombok注解
@@ -321,6 +337,9 @@ public class MyInterceptor implements Interceptor {
 ```
 
 ## 概念
+```text
+什么是注解，注解有什么作用，有哪些注解
+```
 
 1. spring mvc框架
    1. Spring 3.1及以后版本中，推荐使用Java配置而非XML配置。springMvc注解，主要用于‌控制请求映射‌、‌绑定请求参数‌以及‌处理响应数据‌，是开发 Java Web 应用时的核心工具。常用的核心注解包括 ‌@Controller‌、‌@RestController‌、‌@RequestMapping‌、‌@RequestParam‌、‌@PathVariable‌ 和 ‌@ResponseBody‌ 等。
