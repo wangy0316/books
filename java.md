@@ -20,6 +20,41 @@
 3. 实体类: 通常位于 entity 或 model 包下,User.java, System.java.用于存储数据库中的数据的类，通常对应数据库中的一个表。
 4. 后端项目则先找 Spring Boot 启动类。当前启动类是 FullstackMallApplication.java，它所在包名是 com.example.fullstackmall.service。Spring Boot 默认会从启动类所在包向下扫描组件，因此 Controller、Facade、Mapper、Config 等类如果放在这个包的子包下，就更容易被自动发现。你以后新增后端类时，也要有“包扫描范围”的意识，不要随便放到完全无关的包路径里。
 
+## 类
+我们通常根据职责（职责单一原则）来给类分类。下面按你最容易理解的业务流从外到内列举：
+1. Controller（控制器类）
+作用：对应前端的 API 接口。负责接收前端传来的请求参数，调用 Service 处理业务，然后把结果返回给前端。
+特点：里面通常只有简单的参数校验和转发，不写复杂的业务逻辑。
+
+2. Service（业务逻辑类）
+作用：系统的核心。所有的业务规则、计算、判断都在这里。
+特点：通常分为接口（UserService）和实现类（UserServiceImpl）。它负责调用 Mapper 查数据库，或者调用其他 Service。
+
+3. Mapper / DAO（数据访问类）
+作用：专门负责和数据库打交道（增删改查）。
+特点：通常在 Spring Boot + MyBatis-Plus 中，它就是一个接口（UserMapper），继承框架的 BaseMapper，不需要写实现类。
+
+4. Entity（实体类）
+作用：和数据库表字段一一对应的类。表里有什么字段，它里面就有什么属性。**如果不做vo，那么entity的数据都会返回给前端**
+特点：通常放在 entity 或 domain 包下，使用 @Data 注解。
+
+5. DTO（Data Transfer Object，数据传输对象）
+作用：前端传给后端的参数，或者后端微服务之间传递的数据，通常封装成 DTO。
+例子：前端注册时只传了手机号和密码，但 Entity 里还有创建时间、状态等字段。这时候我们用一个 UserRegisterDTO 来接收前端参数。这样前端就可以通过参数来修改创建时间和状态。
+
+6. VO（View Object，视图对象）
+作用：后端返回给前端展示的数据。
+例子：前端查用户列表，需要展示用户的订单数量，但数据库 User 表里没有订单数量。这时候查出来后，组装成一个 UserInfoVO 返回给前端。
+
+7. Config（配置类）
+作用：替代传统的 XML 配置文件。比如你写的 MinioConfig，用来在启动时生成并注入一些全局对象（Bean）。
+
+8. Utils（工具类）
+作用：存放静态方法（static），比如日期格式化、加密解密、字符串处理。不需要实例化，直接用 类名.方法名() 调用。
+
+9. Exception（异常类）
+作用：定义业务报错。比如 BusinessException，当用户余额不足时抛出，由全局异常处理器统一捕获并返回给前端友好的提示。
+
 ## 配置类（注解）
 注解功能上都是"把类交给 Spring 管"，区别只是语义标签——就像前端把文件放进 services/、components/、api/ 一样，是为了让人一眼知道职责。
 ```java
@@ -60,8 +95,8 @@ DI（依赖注入）：容器把依赖注入到对象里。
     |@Controller / @RestController |	控制层 |
     |@Configuration	|配置类|
     |@Bean	声明 | Bean |
-    |@Autowired	| 注入|
-    |@Value	|注入配置值 |
+    |@Autowired	| 注入 |
+    |@Value	| 注入配置值 |
     |@ConfigurationProperties	| 批量绑定配置 |
 
 
@@ -83,7 +118,7 @@ cn.dip.platform
 │   ├── domain
 │   │   ├── do      # 数据库实体
 │   │   ├── dto     // 传输对象
-│   │   └── vo      // 视图对象
+│   │   └── vo      // 视图对象(将前端需要的数据从dto中筛选)
 │   └── vo
 ├── cluster         # 业务模块2：集群管理
 ├── job             # 业务模块3：作业管理
@@ -137,6 +172,13 @@ cn.dip.platform
 
 domain层，文件夹名称不固定（domain，entity‌，model‌），可能文件夹随便取，文件名叫XXXDO.java。文件中通常使用@Data等Lombok注解
 存放实体类，与数据库中的属性保持一致，存放属性和操作属性的get，set方法
+@Data  Lombok 注解，自动生成 getter/setter
+@Data 实际上是一个“全家桶”，它等价于以下五个注解的组合：
+1. @Getter（生成所有属性的 get 方法）
+2. @Setter（生成所有属性的 set 方法）
+3. @ToString（生成 toString 方法）
+4. @EqualsAndHashCode（生成 equals 和 hashCode 方法）
+5. @RequiredArgsConstructor（为 final 和 @NonNull 字段生成构造方法）
 
 ```java
 public class user {
@@ -200,7 +242,7 @@ public class UserServiceImpl implements UserService {
 
 ### controller层
 
-给前端提供接口的类，主要负责接收前端的请求，调用service层的方法，返回结果。\
+给前端提供接口的类，主要负责接收前端的请求，调用service层的方法，返回结果。
 关键字： @RestController、@GetMapping、@PostMapping、@PathVariable、@RequestBody
 
 ```java
@@ -217,7 +259,7 @@ public class UserController {
     }
 }
 
-// 如何查看后端接收的接口参数
+// 如何查看后端接收的接口参数-PathVariable
   /**
    * 接收路径中的 ID
    * URL: /api/user/1001
@@ -227,21 +269,18 @@ public class UserController {
       return "正在查询用户ID: " + userId;
   }
   /**
-   * 接收查询参数
+   * 接收查询参数-RequestParam
    * URL: /api/search/list?keyword=Java&page=1
    */
   @GetMapping("/list")
   public String searchList(
-          @RequestParam(value = "keyword", required = true) String keyword,
-          @RequestParam(value = "page", defaultValue = "1") Integer page) {
-      
+    @RequestParam(value = "keyword", required = true) String keyword,
+    @RequestParam(value = "page", defaultValue = "1") Integer page) {
       return "搜索关键词: " + keyword + ", 当前页: " + page;
   }
 
   // 接收 JSON 请求体参数
-
-  // 定义实体类UserDTO.java
-  @Data // Lombok 注解，自动生成 getter/setter
+  // 定义实体类dto，文件名UserDTO.java
   public class UserDTO {
     private String name;
     private Integer age;
@@ -252,13 +291,27 @@ public class UserController {
     return "正在创建用户: " + user;
   }
 
+  // 如果前端传递的是数组，比如[1,2,3]
+  @PostMapping("/create")
+  public String createUser(@RequestBody List<Long> ids) {
+    return "正在创建用户: " + ids;
+  }
+
   /**
    * 如果不想定义实体类，也可以用 Map 接收 (不推荐复杂场景使用)
+   * 不推荐原因：
+   * 1. 本来定义age字段为数字，前端手滑传了个字符串 "18"，你强转 (Integer) 直接崩溃。如果用 DTO，Spring 会自动帮你把类型转换好。
+   * 2. 字段名毫无提示，全靠猜
+   * 3. 无法配合校验注解，DTO 直接加 @NotBlank 就行
    */
   @PostMapping("/add/map")
   public String addUserMap(@RequestBody Map<String, Object> params) {
+    String name = (String) params.get("name");
+    String age = (String) params.get("age");
     return "收到参数: " + params.toString();
   }
+
+  // get请求不能使用@RequestBody接收参数
 ```
 
 ```java
@@ -338,7 +391,32 @@ public class MyInterceptor implements Interceptor {
 
 ## 概念
 ```text
-什么是注解，注解有什么作用，有哪些注解
+什么是注解，注解有什么作用，有哪些注解？
+- 在 Java（尤其是 Spring Boot）里，注解（Annotation）本质上就是一种“贴在代码上的标签”。它本身没有任何逻辑，但底层的框架（比如 Spring）看到这个标签，就会给这个类或方法加上对应的“魔法（额外功能）”。
+1. 标识类（给类贴标签）
+@Component / @Service / @Controller / @Repository
+作用：告诉 Spring：“启动的时候，把我也变成一个 Bean 放进容器里！”
+区别：底层功能一模一样，只是语义不同。写业务逻辑用 @Service，写接口用 @Controller（如果你用前后端分离，一般用 @RestController）。
+@Configuration
+作用：告诉 Spring：“这是一个配置类，里面会有 @Bean 组装对象的方法”。
+@Data / @Getter / @Setter（来自 Lombok）
+作用：在编译时自动帮你生成 Get/Set 方法，不用手写。就像前端 TS 里自动生成的 interface 映射。
+2. 标识方法/属性（处理请求和注入）
+@Autowired / @Resource
+作用：自动注入。把 Spring 容器里的 Bean 拿过来赋值给这个变量。
+@Bean
+作用：贴在方法上，把方法 return 的对象交给 Spring 管理。
+@RequestMapping / @GetMapping / @PostMapping
+作用：路由映射。告诉前端：“你发这个 URL 的 GET/POST 请求，就来找我这个方法处理”。这相当于前端 Vue Router 里的路由配置。
+@RequestBody / @RequestParam / @PathVariable
+作用：告诉 Spring：“从请求的哪个位置拿参数”。（拿 JSON、拿 Query 参数、拿 URL 路径参数）。
+3. 增强功能（AOP 和校验）
+@Transactional
+作用：数据库事务。方法里如果有多个数据库操作（比如下单扣库存+扣钱），只要有一个报错，全部回滚，保证数据一致。
+@Override
+作用：告诉编译器：“我这个方法是重写父类的”。如果你名字拼错了，编译器会立刻标红报错。
+@Valid 或 @Validated
+作用：配合 DTO 里的 @NotBlank、@NotNull 等，自动校验前端传过来的参数是否合法。
 ```
 
 1. spring mvc框架
@@ -359,8 +437,12 @@ public class MyInterceptor implements Interceptor {
       @TableField(value = "create\_time", fill = FieldFill.INSERT)：在插入时自动填充字段值
       @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")：在返回json数据时，格式化时间字段
 4. bean
-   ‌Bean‌ 是由 ‌Spring IoC 容器‌（控制反转容器）管理的一个对象。在传统的 Java 开发中，对象通常由开发者通过 new 关键字手动创建；而在 Spring Boot 中，对象的创建、初始化、销毁等生命周期全部交给 Spring 容器统一管理。这些被容器管理的对象就称为 ‌Bean‌。类似前端的vuex，一个地方定义，后续在其他组件中使用定义都是同一个实例，保证了状态一致和共享
-   使用@Autowired注解，自动注入依赖。类似前端的vuex引入store和方法。
+   ‌Bean‌ 是由 ‌Spring IoC 容器‌（控制反转容器）管理的一个对象。在传统的 Java 开发中，对象通常由开发者通过 new 关键字手动创建；而在 Spring Boot 中，对象的创建、初始化、销毁等生命周期全部交给 Spring 容器统一管理。这些**被容器管理的对象就称为 ‌Bean‌**。类似前端的vuex，一个地方定义，后续在其他组件中使用定义都是同一个实例，保证了状态一致和共享
+   - 怎么注入，注入了如何使用？
+   1. 使用@Autowired注解，自动注入依赖。类似前端的vuex引入store和方法。@Autowired就是注入和使用
+   - @Bean的用法
+   1. 这是另外的概念，自己动手做组装，告诉 Spring“把我这个方法 return 出来的对象变成 Bean”
+   
 5. maven项目
 6. pom.xml可解读java版本，项目几个模块（modules）
 7. Lombok 框架
@@ -789,6 +871,55 @@ public DataSourceAdapter getAdapter(String type) {
 索引变化：加索引、删索引、统计信息更新，都可能改变返回顺序。
 所以，不要依赖“看起来稳定”的顺序，比如“平时都是按 id 返回的”，这不可靠。
 ```
+
+# mysql
+
+CRUD
+1. Create（插入），核心是 INSERT INTO。自增主键可以省略。
+  - 指定列插入（推荐，字段清晰）
+    - INSERT INTO students (sn, name, qq) VALUES (10001, '孙悟空', '11111');
+  - 多行插入
+    - INSERT INTO students (sn, name) VALUES (10002, '猪悟能'), (10003, '沙悟净');
+  - 如果遇到唯一键冲突想“存在则更新”，用 ON DUPLICATE KEY UPDATE
+    - INSERT INTO students (sn, name) VALUES (10004, '沙悟净') ON DUPLICATE KEY UPDATE name = VALUES(name);
+    
+2. Retrieve（查询），不要用 SELECT *，明确写列名。WHERE 过滤、ORDER BY 排序、LIMIT 分页是日常三件套。
+  SELECT id, name, english FROM exam_result WHERE math > 80 ORDER BY english DESC LIMIT 10;
+  WHERE 和 HAVING 的区别——WHERE 在分组前过滤行，HAVING 在 GROUP BY 后过滤组
+
+3. Update（更新）
+  UPDATE exam_result SET math = 80 WHERE name = '孙悟空';
+  不带 WHERE 的 UPDATE 会更新全表。线上操作前先 SELECT 验证条件
+4. Delete（删除）
+  DELETE FROM exam_result WHERE name = '猪悟能';
+  不带 WHERE 会清空表。面试常对比 DELETE / TRUNCATE / DROP：DELETE 是 DML，可回滚（InnoDB），逐行删；TRUNCATE 是 DDL，不可回滚，重置自增，速度快；DROP 直接删表结构
+
+# redis
+
+Redis 在你全栈项目里最可能的角色是缓存，其次是分布式锁和简单计数/排行榜。面试问 Redis，核心是：五种数据类型分别对应什么场景。
+String（字符串）
+最基础的类型。命令：SET key value、GET key、INCR key（原子自增）、SETEX key seconds value（带过期时间）。
+场景：缓存对象 JSON、计数器（点赞数、访问量）、分布式锁（SET key value NX EX 30）。
+
+Hash（哈希）
+一个 key 下存多个 field-value，适合存对象的各个字段，可以单独更新某个字段。
+命令：HSET user:1 name "张三" age 25、HGET user:1 name、HGETALL user:1。
+场景：用户信息、商品信息。相比 String 存整个 JSON，Hash 可以只读/改某个字段，不用整体序列化反序列化。
+
+List（列表）
+双向链表，可以从左/右插入弹出。
+命令：LPUSH、RPUSH、LPOP、RPOP、LRANGE key 0 -1。
+场景：简单消息队列（LPUSH + BRPOP）、最新消息列表。
+
+Set（集合）
+无序、自动去重。命令：SADD、SMEMBERS、SINTER（交集）、SUNION（并集）。
+场景：共同好友（交集）、去重统计（独立 IP）、标签系统。
+
+Sorted Set（有序集合，ZSet）
+每个元素带一个 score，按 score 排序。命令：ZADD key score member、ZRANGE key 0 -1 WITHSCORES、ZREVRANGE。
+场景：排行榜（score 是分数/时间戳）、延迟队列（score 是执行时间戳）
+
+
 # 代码写法
 
 1. 使用@Resource还是@Autowried？
